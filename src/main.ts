@@ -1,2 +1,2 @@
-import "tailwindcss";
+// main.ts
 
