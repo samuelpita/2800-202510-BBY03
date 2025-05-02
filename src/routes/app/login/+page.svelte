@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { PageProps } from "./$types";
 
-    const { form }: PageProps = $props();
+    let { form }: PageProps = $props();
 </script>
 
 <h1>Log in to Lorax</h1>

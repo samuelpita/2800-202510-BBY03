@@ -1,11 +1,12 @@
 <script lang="ts">
     import type { PageProps } from "./$types";
 
-    const { data }: PageProps = $props();
+    let { data }: PageProps = $props();
 </script>
 
 <h1>App</h1>
 
+<!-- Example of if/else statement on Svelte HTML -->
 {#if data.user}
     <h1>Hi {data.user.username}</h1>
     <a href="/app/account">Account</a>
