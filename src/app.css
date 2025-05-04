@@ -25,6 +25,10 @@
     @apply flex-col md:odd:flex-row md:even:flex-row-reverse;
 }
 
+.text-error {
+    @apply text-red-500 dark:text-red-500;
+}
+
 /* Element Variables */
 
 body {

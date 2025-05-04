@@ -17,14 +17,14 @@ export function passwordMatchesHash(password: string, hash: string) {
 // Cookie Management //
 
 export const cookieOptions: CookieSerializeOptions & { path: string } = {
-    path: "/app",
+    path: "/",
     httpOnly: !dev,
     secure: !dev,
     maxAge: 60 * 60 * 24,
 };
 
 export const cookieOptionsDelete: CookieSerializeOptions & { path: string } = {
-    path: "/app",
+    path: "/",
 };
 
 /**

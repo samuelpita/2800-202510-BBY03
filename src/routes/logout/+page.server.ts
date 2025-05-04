@@ -3,9 +3,6 @@ import { redirect } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ cookies, locals }) => {
-    if (locals.user) {
-        deleteAuthCookies(cookies);
-        locals.user = null;
-    }
+    if (locals.user) deleteAuthCookies(cookies);
     throw redirect(303, "/login");
 };
