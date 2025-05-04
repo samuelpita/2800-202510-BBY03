@@ -4,5 +4,5 @@ import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ cookies, locals }) => {
     if (locals.user) deleteAuthCookies(cookies);
-    throw redirect(303, "/app/login");
+    throw redirect(303, "/login");
 };

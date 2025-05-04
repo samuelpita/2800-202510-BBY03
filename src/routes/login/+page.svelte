@@ -10,7 +10,11 @@
             <img src="https://dummyimage.com/48x48/000/fff" alt="" />
         </a>
 
-        <h1>Sign up for Lorax</h1>
+        <h1>Log in to Lorax</h1>
+
+        {#if form?.incorrect}
+            <p>Email address or password is incorrect!</p>
+        {/if}
 
         <form method="post" class="*:not-last:mb-def">
             <label class="flex flex-col gap-2">
@@ -26,21 +30,6 @@
                     <span class="text-red-500">You must fill out this field!</span>
                 {/if}
             </label>
-
-            <label class="flex flex-col gap-2">
-                <span>Username *</span>
-                <input
-                    type="text"
-                    name="username"
-                    value={form?.username}
-                    class="rounded-inner border p-2"
-                />
-
-                {#if form?.missing?.includes("username")}
-                    <span class="text-red-500">You must fill out this field!</span>
-                {/if}
-            </label>
-
             <label class="flex flex-col gap-2">
                 <span>Password *</span>
                 <input type="password" name="password" class="rounded-inner border p-2" />
@@ -49,19 +38,9 @@
                     <span class="text-red-500">You must fill out this field!</span>
                 {/if}
             </label>
-
-            <label class="flex flex-col gap-2">
-                <span>Confirm password *</span>
-                <input type="password" name="passwordConfirm" class="rounded-inner border p-2" />
-
-                {#if form?.nonMatchingPasswords}
-                    <span class="text-red-500">Password fields must match!</span>
-                {/if}
-            </label>
-
-            <button class="rounded-inner w-full border p-2">Register</button>
+            <button class="rounded-inner w-full border p-2">Log in</button>
         </form>
 
-        <a href="/app/login">I already have an account!</a>
+        <a href="/register">Create a new account</a>
     </div>
 </main>

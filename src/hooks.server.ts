@@ -1,9 +1,10 @@
+import { stringStartsWithAny } from "$lib";
 import { findUserById } from "$lib/server/db";
 import { endConnection } from "$lib/server/mongo";
 import type { Handle } from "@sveltejs/kit";
 
 export const handle: Handle = async ({ event, resolve }) => {
-    if (event.url.pathname.startsWith("/app")) {
+    if (stringStartsWithAny(event.url.pathname, "/app", "/login", "/logout", "/register")) {
         const sessionId = event.cookies.get("sessionid");
         const userId = event.cookies.get("userid");
 

@@ -19,7 +19,7 @@ export const actions: Actions = {
      *
      * Like how you'd have an Express app.post() function that executes when
      * the user is on a certain URL, this function runs when the URL is
-     * /app/login?/login, and helps you authenticate to the app, with
+     * /login?/login, and helps you authenticate to the app, with
      * the relevant form parameters given in the HTTP request.
      */
     default: async ({ cookies, request }) => {

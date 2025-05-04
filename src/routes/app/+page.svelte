@@ -4,14 +4,34 @@
     let { data }: PageProps = $props();
 </script>
 
-<h1>App</h1>
+<h1>Hello</h1>
 
-<!-- Example of if/else statement on Svelte HTML -->
-{#if data.user}
-    <h1>Hi {data.user.username}</h1>
-    <a href="/app/account">Account</a>
-{:else}
-    <h1>Welcome!</h1>
-    <a href="/app/login">Log in</a>
-    <a href="/app/register">Sign up</a>
-{/if}
+<p>
+    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem eius dolore impedit, laboriosam
+    aliquam velit eaque tenetur quibusdam fuga, in placeat molestiae atque culpa vero totam dolores
+    consectetur exercitationem dolorum.
+</p>
+
+<div class="size-128 bg-purple-500"></div>
+
+<p>
+    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem eius dolore impedit, laboriosam
+    aliquam velit eaque tenetur quibusdam fuga, in placeat molestiae atque culpa vero totam dolores
+    consectetur exercitationem dolorum.
+</p>
+
+<div class="size-128 bg-purple-500"></div>
+
+<p>
+    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem eius dolore impedit, laboriosam
+    aliquam velit eaque tenetur quibusdam fuga, in placeat molestiae atque culpa vero totam dolores
+    consectetur exercitationem dolorum.
+</p>
+
+<div class="size-128 bg-purple-500"></div>
+
+<p>
+    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem eius dolore impedit, laboriosam
+    aliquam velit eaque tenetur quibusdam fuga, in placeat molestiae atque culpa vero totam dolores
+    consectetur exercitationem dolorum.
+</p>

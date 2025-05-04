@@ -17,7 +17,7 @@ export const actions: Actions = {
     /**
      * Register Action (Default)
      *
-     * This function handles /app/register POST requests where it adds
+     * This function handles /register POST requests where it adds
      * the new user's data to the DB, and authenticate them by adding
      * cookies.
      */

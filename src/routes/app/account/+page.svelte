@@ -13,4 +13,4 @@
     <h1>You're not signed in.</h1>
 {/if}
 
-<a href="/app/logout">Log out</a>
+<a href="/logout">Log out</a>

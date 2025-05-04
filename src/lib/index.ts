@@ -1,5 +1,14 @@
 // place files you want to import through the `$lib` alias in this folder.
 
+// String helper functions //
+
+export function stringStartsWithAny(source: string, ...keys: string[]) {
+    for (const key of keys) {
+        if (source.startsWith(key)) return key;
+    }
+    return false;
+}
+
 // FormData helper functions //
 
 export function objectifyFormData(form: FormData, includeOnly?: string[]) {
