@@ -6,8 +6,9 @@
     --font-serif: "Roboto Serif", ui-serif;
     --font-sans: "Inter", ui-sans-serif;
 
-    --spacing-def: 2rem;
-    --spacing-nav-h: 4rem;
+    --spacing-edge-d: 2rem;
+    --spacing-edge-m: 1rem;
+    --spacing-nav: 4rem;
 
     --radius-outer: 0.75rem;
     --radius-inner: 0.25rem;

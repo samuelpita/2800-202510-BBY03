@@ -5,9 +5,9 @@
 
 <LandingNavBar />
 
-<main class="my-def *:not-last:mb-def">
+<main class="my-edge-d *:not-last:mb-edge-d">
     <header>
-        <div class="mb-def px-def mx-auto max-w-4xl">
+        <div class="mb-edge-d px-edge-d mx-auto max-w-4xl">
             <h1>Lorax</h1>
             <h5>designed for tree lovers, and those who speak for the trees</h5>
         </div>
@@ -16,7 +16,7 @@
         <img src="https://dummyimage.com/1280x320/000/fff" alt="" class="hidden w-full md:block" />
     </header>
 
-    <section class="px-def mx-auto max-w-4xl">
+    <section class="px-edge-d mx-auto max-w-4xl">
         <h3>Mission</h3>
         <p>
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusamus sint exercitationem
@@ -25,8 +25,8 @@
         </p>
     </section>
 
-    <div class="px-def *:not-last:mb-def mx-auto max-w-4xl">
-        <section class="gap-def flex-info-order flex">
+    <div class="px-edge-d *:not-last:mb-edge-d mx-auto max-w-4xl">
+        <section class="gap-edge-d flex-info-order flex">
             <img
                 src="https://dummyimage.com/1000x1000/000/fff"
                 alt=""
@@ -42,7 +42,7 @@
             </div>
         </section>
 
-        <section class="gap-def flex-info-order flex">
+        <section class="gap-edge-d flex-info-order flex">
             <img
                 src="https://dummyimage.com/1000x1000/000/fff"
                 alt=""
@@ -58,7 +58,7 @@
             </div>
         </section>
 
-        <section class="gap-def flex-info-order flex">
+        <section class="gap-edge-d flex-info-order flex">
             <img
                 src="https://dummyimage.com/1000x1000/000/fff"
                 alt=""

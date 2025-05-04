@@ -12,7 +12,7 @@
     consectetur exercitationem dolorum.
 </p>
 
-<div class="size-128 bg-purple-500"></div>
+<div class="size-48 bg-purple-500"></div>
 
 <p>
     Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem eius dolore impedit, laboriosam
@@ -20,7 +20,7 @@
     consectetur exercitationem dolorum.
 </p>
 
-<div class="size-128 bg-purple-500"></div>
+<div class="size-48 bg-purple-500"></div>
 
 <p>
     Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem eius dolore impedit, laboriosam
@@ -28,7 +28,7 @@
     consectetur exercitationem dolorum.
 </p>
 
-<div class="size-128 bg-purple-500"></div>
+<div class="size-48 bg-purple-500"></div>
 
 <p>
     Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem eius dolore impedit, laboriosam

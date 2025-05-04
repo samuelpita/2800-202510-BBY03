@@ -5,7 +5,7 @@
 </script>
 
 <div class="bg-light-2 dark:bg-dark-2 size-full">
-    <button onclick={dWideNavCallback} class="size-nav-h">
+    <button onclick={dWideNavCallback} class="size-nav">
         <img src="https://dummyimage.com/64x64/000/fff" alt="" />
     </button>
 </div>

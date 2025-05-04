@@ -1,5 +1,5 @@
 <footer class="bg-light-2 dark:bg-dark-2">
-    <div class="p-def mx-auto max-w-4xl">
+    <div class="p-edge-d mx-auto max-w-4xl">
         <h5>Footer</h5>
 
         <p>

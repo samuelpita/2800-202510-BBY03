@@ -4,15 +4,17 @@
     let { form }: PageProps = $props();
 </script>
 
-<main class="my-def">
-    <div class="p-def bg-light-2 dark:bg-dark-2 *:not-last:mb-def rounded-outer mx-auto max-w-xl">
+<main class="my-edge-d">
+    <div
+        class="p-edge-d bg-light-2 dark:bg-dark-2 *:not-last:mb-edge-d rounded-outer mx-auto max-w-xl"
+    >
         <a href="/" class="flex size-12">
             <img src="https://dummyimage.com/48x48/000/fff" alt="" />
         </a>
 
         <h1>Sign up for Lorax</h1>
 
-        <form method="post" class="*:not-last:mb-def">
+        <form method="post" class="*:not-last:mb-edge-d">
             <label class="flex flex-col gap-2">
                 <span>Email address *</span>
                 <input
