@@ -7,8 +7,9 @@
     --font-sans: "Inter", ui-sans-serif;
 
     --spacing-edge-d: 2rem;
-    --spacing-edge-m: 1rem;
+    --spacing-edge-m: 1.5rem;
     --spacing-nav: 4rem;
+    --spacing-ico: 3rem;
 
     --radius-outer: 0.75rem;
     --radius-inner: 0.25rem;
@@ -28,6 +29,10 @@
 
 .text-error {
     @apply text-red-500 dark:text-red-500;
+}
+
+.text-link {
+    @apply text-accent font-sans underline underline-offset-4;
 }
 
 /* Element Variables */
@@ -61,7 +66,7 @@ h6 {
 }
 
 a {
-    @apply text-accent font-sans underline underline-offset-4;
+    @apply font-sans text-black dark:text-white;
 }
 
 button {

@@ -7,8 +7,11 @@
 
 <main class="my-edge-d *:not-last:mb-edge-d">
     <header>
-        <div class="mb-edge-d px-edge-d mx-auto max-w-4xl">
-            <h1>Lorax</h1>
+        <div class="mb-edge-d px-edge-d mx-auto max-w-4xl *:not-last:mb-2">
+            <h1>
+                <img src="https://dummyimage.com/128x128/000/fff" alt="" class="size-nav inline" />
+                <span class="align-middle">Lorax</span>
+            </h1>
             <h5>designed for tree lovers, and those who speak for the trees</h5>
         </div>
 

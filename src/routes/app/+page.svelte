@@ -4,34 +4,52 @@
     let { data }: PageProps = $props();
 </script>
 
-<h1>Hello</h1>
+<div class="mx-auto max-w-4xl">
+    <section>
+        <h1>Hello</h1>
 
-<p>
-    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem eius dolore impedit, laboriosam
-    aliquam velit eaque tenetur quibusdam fuga, in placeat molestiae atque culpa vero totam dolores
-    consectetur exercitationem dolorum.
-</p>
+        <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem eius dolore impedit,
+            laboriosam aliquam velit eaque tenetur quibusdam fuga, in placeat molestiae atque culpa
+            vero totam dolores consectetur exercitationem dolorum.
+        </p>
 
-<div class="size-48 bg-purple-500"></div>
+        <div class="size-48 bg-purple-500"></div>
+    </section>
 
-<p>
-    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem eius dolore impedit, laboriosam
-    aliquam velit eaque tenetur quibusdam fuga, in placeat molestiae atque culpa vero totam dolores
-    consectetur exercitationem dolorum.
-</p>
+    <section>
+        <h3>Heading</h3>
 
-<div class="size-48 bg-purple-500"></div>
+        <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem eius dolore impedit,
+            laboriosam aliquam velit eaque tenetur quibusdam fuga, in placeat molestiae atque culpa
+            vero totam dolores consectetur exercitationem dolorum.
+        </p>
 
-<p>
-    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem eius dolore impedit, laboriosam
-    aliquam velit eaque tenetur quibusdam fuga, in placeat molestiae atque culpa vero totam dolores
-    consectetur exercitationem dolorum.
-</p>
+        <div class="size-48 bg-purple-500"></div>
+    </section>
 
-<div class="size-48 bg-purple-500"></div>
+    <section>
+        <h3>Heading</h3>
 
-<p>
-    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem eius dolore impedit, laboriosam
-    aliquam velit eaque tenetur quibusdam fuga, in placeat molestiae atque culpa vero totam dolores
-    consectetur exercitationem dolorum.
-</p>
+        <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem eius dolore impedit,
+            laboriosam aliquam velit eaque tenetur quibusdam fuga, in placeat molestiae atque culpa
+            vero totam dolores consectetur exercitationem dolorum.
+        </p>
+
+        <div class="size-48 bg-purple-500"></div>
+    </section>
+
+    <section>
+        <h3>Heading</h3>
+
+        <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem eius dolore impedit,
+            laboriosam aliquam velit eaque tenetur quibusdam fuga, in placeat molestiae atque culpa
+            vero totam dolores consectetur exercitationem dolorum.
+        </p>
+
+        <div class="size-48 bg-purple-500"></div>
+    </section>
+</div>
