@@ -1,42 +1,76 @@
 @import "tailwindcss";
 
+/* Theme Variables */
+
 @theme {
     --font-serif: "Roboto Serif", ui-serif;
     --font-sans: "Inter", ui-sans-serif;
+
+    --spacing-def: 2rem;
+    --spacing-nav-h: 4rem;
+
+    --radius-outer: 0.75rem;
+    --radius-inner: 0.25rem;
+
+    --color-accent: oklch(69.6% 0.17 162.48);
+    --color-dark: oklch(21% 0.006 285.885);
+    --color-dark-2: oklch(29% 0.006 286.033);
+    --color-light: oklch(98% 0.016 73.684);
+    --color-light-2: oklch(95.4% 0.038 75.164);
 }
 
-* {
-    @apply text-black dark:text-white;
+/* Class Variables */
+
+.flex-info-order {
+    @apply flex-col md:odd:flex-row md:even:flex-row-reverse;
 }
+
+/* Element Variables */
 
 body {
-    @apply bg-orange-50 dark:bg-zinc-900;
+    @apply bg-light dark:bg-dark;
 }
 
 h1 {
-    @apply font-serif text-6xl;
+    @apply font-serif text-6xl text-black dark:text-white;
 }
 
 h2 {
-    @apply font-serif text-5xl;
+    @apply font-serif text-5xl text-black dark:text-white;
 }
 
 h3 {
-    @apply font-serif text-4xl;
+    @apply font-serif text-4xl text-black dark:text-white;
 }
 
 h4 {
-    @apply font-serif text-3xl;
+    @apply font-serif text-3xl text-black dark:text-white;
 }
 
 h5 {
-    @apply font-serif text-2xl;
+    @apply font-serif text-2xl text-black dark:text-white;
 }
 
 h6 {
-    @apply font-serif text-xl;
+    @apply font-serif text-xl text-black dark:text-white;
 }
 
 a {
-    @apply text-teal-500 underline;
+    @apply text-accent font-sans underline underline-offset-4;
+}
+
+button {
+    @apply text-black dark:text-white;
+}
+
+input {
+    @apply font-sans text-black dark:text-white;
+}
+
+label {
+    @apply font-sans text-black dark:text-white;
+}
+
+p {
+    @apply font-serif text-black dark:text-white;
 }
