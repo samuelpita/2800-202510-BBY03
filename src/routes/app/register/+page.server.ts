@@ -30,10 +30,10 @@ export const actions: Actions = {
 
         // Check fields that haven't been filled out.
         if (!email || !username || !password)
-            return fail(400, { email, missing: getEmptyFields(form) });
+            return fail(400, { email, username, missing: getEmptyFields(form) });
         // Check if Password and Confirm Password field isn't filled out.
         else if (password !== passwordConfirm)
-            return fail(400, { email, nonMatchingPasswords: true });
+            return fail(400, { email, username, nonMatchingPasswords: true });
 
         const hashPassword = getHashedPassword(password);
 

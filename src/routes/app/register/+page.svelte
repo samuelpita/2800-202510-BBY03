@@ -1,31 +1,67 @@
 <script lang="ts">
-    //
+    import type { PageProps } from "./$types";
+
+    let { form }: PageProps = $props();
 </script>
 
-<h1>Register</h1>
+<main class="my-def">
+    <div class="p-def bg-light-2 dark:bg-dark-2 *:not-last:mb-def rounded-outer mx-auto max-w-xl">
+        <a href="/" class="flex size-12">
+            <img src="https://dummyimage.com/48x48/000/fff" alt="" />
+        </a>
 
-<form method="post" class="flex flex-col">
-    <label>
-        <span>Email address</span>
-        <input type="email" name="email" />
-    </label>
+        <h1>Sign up for Lorax</h1>
 
-    <label>
-        <span>Username</span>
-        <input type="text" name="username" />
-    </label>
+        <form method="post" class="*:not-last:mb-def">
+            <label class="flex flex-col gap-2">
+                <span>Email address *</span>
+                <input
+                    type="email"
+                    name="email"
+                    value={form?.email}
+                    class="rounded-inner border p-2"
+                />
 
-    <label>
-        <span>Password</span>
-        <input type="password" name="password" />
-    </label>
+                {#if form?.missing?.includes("email")}
+                    <span class="text-red-500">You must fill out this field!</span>
+                {/if}
+            </label>
 
-    <label>
-        <span>Confirm password</span>
-        <input type="password" name="passwordConfirm" />
-    </label>
+            <label class="flex flex-col gap-2">
+                <span>Username *</span>
+                <input
+                    type="text"
+                    name="username"
+                    value={form?.username}
+                    class="rounded-inner border p-2"
+                />
 
-    <button>Register</button>
-</form>
+                {#if form?.missing?.includes("username")}
+                    <span class="text-red-500">You must fill out this field!</span>
+                {/if}
+            </label>
 
-<a href="/app/login">I already have an account!</a>
+            <label class="flex flex-col gap-2">
+                <span>Password *</span>
+                <input type="password" name="password" class="rounded-inner border p-2" />
+
+                {#if form?.missing?.includes("password")}
+                    <span class="text-red-500">You must fill out this field!</span>
+                {/if}
+            </label>
+
+            <label class="flex flex-col gap-2">
+                <span>Confirm password *</span>
+                <input type="password" name="passwordConfirm" class="rounded-inner border p-2" />
+
+                {#if form?.nonMatchingPasswords}
+                    <span class="text-red-500">Password fields must match!</span>
+                {/if}
+            </label>
+
+            <button class="rounded-inner w-full border p-2">Register</button>
+        </form>
+
+        <a href="/app/login">I already have an account!</a>
+    </div>
+</main>

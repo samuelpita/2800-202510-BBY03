@@ -4,30 +4,43 @@
     let { form }: PageProps = $props();
 </script>
 
-<h1>Log in to Lorax</h1>
+<main class="my-def">
+    <div class="p-def bg-light-2 dark:bg-dark-2 *:not-last:mb-def rounded-outer mx-auto max-w-xl">
+        <a href="/" class="flex size-12">
+            <img src="https://dummyimage.com/48x48/000/fff" alt="" />
+        </a>
 
-{#if form?.incorrect}
-    <p>Email address or password is incorrect!</p>
-{/if}
+        <h1>Log in to Lorax</h1>
 
-<form method="post" class="flex flex-col">
-    <label>
-        <span>Email address</span>
-        <input type="email" name="email" value={form?.email} />
-
-        {#if form?.missing?.includes("email")}
-            <span>You must fill out this field!</span>
+        {#if form?.incorrect}
+            <p>Email address or password is incorrect!</p>
         {/if}
-    </label>
-    <label>
-        <span>Password</span>
-        <input type="password" name="password" />
 
-        {#if form?.missing?.includes("password")}
-            <span>You must fill out this field!</span>
-        {/if}
-    </label>
-    <button>Log in</button>
-</form>
+        <form method="post" class="*:not-last:mb-def">
+            <label class="flex flex-col gap-2">
+                <span>Email address *</span>
+                <input
+                    type="email"
+                    name="email"
+                    value={form?.email}
+                    class="rounded-inner border p-2"
+                />
 
-<a href="/app/register">Create a new account</a>
+                {#if form?.missing?.includes("email")}
+                    <span class="text-red-500">You must fill out this field!</span>
+                {/if}
+            </label>
+            <label class="flex flex-col gap-2">
+                <span>Password *</span>
+                <input type="password" name="password" class="rounded-inner border p-2" />
+
+                {#if form?.missing?.includes("password")}
+                    <span class="text-red-500">You must fill out this field!</span>
+                {/if}
+            </label>
+            <button class="rounded-inner w-full border p-2">Log in</button>
+        </form>
+
+        <a href="/app/register">Create a new account</a>
+    </div>
+</main>
