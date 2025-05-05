@@ -70,7 +70,7 @@ a {
 }
 
 button {
-    @apply text-black dark:text-white;
+    @apply cursor-pointer text-black dark:text-white;
 }
 
 input {
@@ -82,5 +82,5 @@ label {
 }
 
 p {
-    @apply font-serif text-black dark:text-white;
+    @apply text-black dark:text-white;
 }

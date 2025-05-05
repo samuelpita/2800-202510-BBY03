@@ -4,7 +4,7 @@
     let { data }: PageProps = $props();
 </script>
 
-<div class="mx-auto max-w-4xl">
+<div class="p-edge-d mx-auto max-w-4xl">
     <section>
         <h1>Hello</h1>
 

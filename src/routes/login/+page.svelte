@@ -15,7 +15,7 @@
         <h1>Log in to Lorax</h1>
 
         {#if form?.incorrect}
-            <p>Email address or password is incorrect!</p>
+            <p class="text-error">Email address or password is incorrect!</p>
         {/if}
 
         <form method="post" class="*:not-last:mb-edge-d">
