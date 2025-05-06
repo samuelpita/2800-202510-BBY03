@@ -3,8 +3,9 @@ import { MONGODB_URI } from "$env/static/private";
 
 /*
 
-Any functions related to Mongo-specific functionalities will end up here.
+Sam's Instructions:
 
+Any functions related to Mongo-specific functionalities will end up here.
 However, if it's a more general, CRUD-related function, place them in ```db.ts```.
 
 */

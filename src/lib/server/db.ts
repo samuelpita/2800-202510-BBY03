@@ -1,6 +1,7 @@
 import { MONGODB_DATABASE } from "$env/static/private";
 import { ObjectId } from "mongodb";
 import { startConnection } from "./mongo";
+import type { Point } from "geojson";
 
 /*
 
@@ -24,6 +25,14 @@ export type UserDocument = {
     email: string;
     password: string;
     username: string;
+};
+
+export type TreeDocument = {
+    location: Point;
+    ageType: string;
+    species: string;
+    name: string;
+    height: number;
 };
 
 // Users Collection //
@@ -58,5 +67,45 @@ export function findUserById(id: ObjectId | string) {
 export function getTreesCollection() {
     return startConnection().then((client) => {
         return client.db(MONGODB_DATABASE).collection("trees");
+    });
+}
+
+export function insertTree(treeDocument: TreeDocument) {
+    return getTreesCollection().then((trees) => {
+        return trees.insertOne(treeDocument);
+    });
+}
+
+export function findTreesClosestToCoord(
+    lat: number,
+    long: number,
+    options?: { limit?: number; maxDistance?: number },
+) {
+    return getTreesCollection().then((trees) => {
+        if (!options) options = {};
+
+        // Set limit to 10 trees, if not specified.
+        if (!options.limit) options.limit = 10;
+
+        // Set maxDistance to 50 kilometers by default.
+        if (!options.maxDistance) options.maxDistance = 50 * 1000;
+
+        return trees
+            .aggregate([
+                {
+                    $geoNear: {
+                        near: {
+                            type: "Point",
+                            coordinates: [long, lat],
+                        },
+                        distanceField: "distance",
+                        spherical: true,
+                        maxDistance: options.maxDistance,
+                    },
+                },
+                { $sort: { distanceToCenter: 1 } },
+            ])
+            .limit(options.limit)
+            .toArray();
     });
 }
