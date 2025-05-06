@@ -1,10 +1,10 @@
 <script lang="ts">
-    import type { PageProps } from "./$types";
-
-    let { data }: PageProps = $props();
+    //
 </script>
 
 <div class="p-edge-d mx-auto max-w-4xl">
+    <!-- Dumb Data -->
+
     <section>
         <h1>Hello</h1>
 
