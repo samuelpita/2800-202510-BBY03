@@ -4,23 +4,26 @@ import { endConnection } from "$lib/server/mongo";
 import type { Handle } from "@sveltejs/kit";
 
 export const handle: Handle = async ({ event, resolve }) => {
-    if (stringStartsWithAny(event.url.pathname, "/app", "/login", "/logout", "/register")) {
-        const sessionId = event.cookies.get("sessionid");
-        const userId = event.cookies.get("userid");
+    /*
+        This checks the existence of authentication cookies, then sets the
+        locals of the user's information accordingly.
+    */
 
-        if (sessionId && userId) {
-            await findUserById(userId)
-                .then((user) => {
-                    if (user)
-                        event.locals.user = {
-                            email: user.email,
-                            username: user.username,
-                        };
-                })
-                .finally(endConnection);
-        } else {
-            event.locals.user = null;
-        }
+    const sessionId = event.cookies.get("sessionid");
+    const userId = event.cookies.get("userid");
+
+    if (sessionId && userId) {
+        await findUserById(userId)
+            .then((user) => {
+                if (user)
+                    event.locals.user = {
+                        email: user.email,
+                        username: user.username,
+                    };
+            })
+            .finally(endConnection);
+    } else {
+        event.locals.user = null;
     }
 
     return await resolve(event);

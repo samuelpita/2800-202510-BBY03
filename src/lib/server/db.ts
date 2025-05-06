@@ -26,7 +26,7 @@ export type UserDocument = {
     username: string;
 };
 
-// Collections //
+// Users Collection //
 
 export function getUsersCollection() {
     return startConnection().then((client) => {
@@ -34,15 +34,11 @@ export function getUsersCollection() {
     });
 }
 
-// Create //
-
 export function insertUser(userDocument: UserDocument) {
     return getUsersCollection().then((users) => {
         return users.insertOne(userDocument);
     });
 }
-
-// Read //
 
 export function findUserByEmail(email: string) {
     return getUsersCollection().then((users) => {
@@ -57,6 +53,10 @@ export function findUserById(id: ObjectId | string) {
     });
 }
 
-// Update //
+// Trees Collection //
 
-// Delete //
+export function getTreesCollection() {
+    return startConnection().then((client) => {
+        return client.db(MONGODB_DATABASE).collection("trees");
+    });
+}

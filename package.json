@@ -19,6 +19,7 @@
         "@sveltejs/vite-plugin-svelte": "^5.0.0",
         "@tailwindcss/vite": "^4.0.0",
         "@types/bcrypt": "^5.0.2",
+        "@types/geojson": "^7946.0.16",
         "mdsvex": "^0.12.3",
         "prettier": "^3.4.2",
         "prettier-plugin-svelte": "^3.3.3",

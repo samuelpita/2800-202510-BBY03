@@ -6,8 +6,11 @@
     --font-serif: "Roboto Serif", ui-serif;
     --font-sans: "Inter", ui-sans-serif;
 
+    /* -d for Desktop View */
+    /* -m for Mobile View */
     --spacing-edge-d: 2rem;
     --spacing-edge-m: 1.5rem;
+
     --spacing-nav: 4rem;
     --spacing-ico: 3rem;
 
