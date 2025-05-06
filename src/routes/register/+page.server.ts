@@ -1,7 +1,7 @@
 import { fail, redirect } from "@sveltejs/kit";
 import type { Actions, PageServerLoad } from "./$types";
 import { getEmptyFields, objectifyFormData } from "$lib";
-import { insertUser } from "$lib/server/db";
+import { findUserByEmail, insertUser } from "$lib/server/db";
 import { createAuthCookies, getHashedPassword } from "$lib/server/authentication";
 import { endConnection } from "$lib/server/mongo";
 
@@ -28,12 +28,30 @@ export const actions: Actions = {
             [key: string]: string;
         };
 
+        // Check for a duplicate email address.
+        const possibleDuplicate = await findUserByEmail(email)
+            .then((doc) => {
+                if (doc) return true;
+                else return false;
+            })
+            .catch((error) => {
+                console.log(error);
+                return undefined;
+            });
+
         // Check fields that haven't been filled out.
-        if (!email || !username || !password)
+        if (!email || !username || !password || !passwordConfirm)
             return fail(400, { email, username, missing: getEmptyFields(form) });
-        // Check if Password and Confirm Password field isn't filled out.
-        else if (password !== passwordConfirm)
+
+        // Check if password and passwordConfirm field isn't filled out.
+        if (password !== passwordConfirm)
             return fail(400, { email, username, nonMatchingPasswords: true });
+
+        // Don't create an account if there's an issue with MongoDB.
+        if (possibleDuplicate == undefined)
+            return fail(400, { email, username, serverIssue: true });
+        // Don't create an account if there is a duplicate.
+        else if (possibleDuplicate) return fail(400, { email, username, possibleDuplicate });
 
         const hashPassword = getHashedPassword(password);
 
@@ -42,6 +60,10 @@ export const actions: Actions = {
                 console.log("Added user to database. Setting up cookies.");
                 createAuthCookies(cookies, user.insertedId.toString());
                 throw redirect(303, "/app/account");
+            })
+            .catch((error) => {
+                console.log(error);
+                return fail(500, { email, username, serverIssue: true });
             })
             .finally(endConnection);
     },
