@@ -5,18 +5,16 @@
     let { children } = $props();
 </script>
 
-<!-- Desktop Layout -->
-<div class="hidden md:flex">
-    <DesktopNavBar />
-    <main class="h-svh w-full overflow-y-scroll">
-        {@render children()}
-    </main>
-</div>
+<div class="md:flex">
+    <div class="hidden h-svh md:flex">
+        <DesktopNavBar />
+    </div>
 
-<!-- Mobile Layout -->
-<div class="md:hidden">
-    <main>
+    <main class="h-[calc(100svh-var(--spacing-nav))] w-full overflow-y-scroll md:h-svh">
         {@render children()}
     </main>
-    <MobileNavBar />
+
+    <div class="md:hidden">
+        <MobileNavBar />
+    </div>
 </div>
