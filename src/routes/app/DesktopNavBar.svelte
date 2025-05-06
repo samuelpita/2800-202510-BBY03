@@ -1,37 +1,20 @@
 <script lang="ts">
     import { fade } from "svelte/transition";
-    import { goto } from "$app/navigation";
-    import { page } from "$app/state";
-    import type { ChangeEventHandler } from "svelte/elements";
 
     let dWideNav = $state(false);
-    let selectedPath = $state(page.url.pathname);
-    let navSpans: { [elem: string]: HTMLSpanElement } = $state({});
-
-    const sceneChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-        goto(selectedPath);
-    };
 
     function divStyle() {
         return dWideNav ? "w-56" : "w-ico";
     }
 </script>
 
-{#snippet radioNavLink(src: string, path: string, name: string)}
-    <label class="flex cursor-pointer items-center gap-2 not-last:mb-4">
+{#snippet navLink(src: string, href: string, name: string)}
+    <a {href} class="flex cursor-pointer items-center gap-2 not-last:mb-4">
         <img {src} alt="" class="size-ico" />
-        <input
-            type="radio"
-            name="scene"
-            bind:group={selectedPath}
-            value={path}
-            onchange={sceneChange}
-            class="hidden"
-        />
         {#if dWideNav}
-            <span transition:fade bind:this={navSpans.account}>{name}</span>
+            <span transition:fade>{name}</span>
         {/if}
-    </label>
+    </a>
 {/snippet}
 
 <div class="bg-light-2 dark:bg-dark-2 box-content p-4">
@@ -52,23 +35,15 @@
         </a>
 
         <nav>
-            {@render radioNavLink(
-                "https://dummyimage.com/128x128/000/fff",
-                "/app/account",
-                "Account",
-            )}
-            {@render radioNavLink("https://dummyimage.com/128x128/000/fff", "/app", "Home")}
-            {@render radioNavLink(
-                "https://dummyimage.com/128x128/000/fff",
-                "/app/search",
-                "Search",
-            )}
-            {@render radioNavLink("https://dummyimage.com/128x128/000/fff", "/app/map", "Map")}
-            {@render radioNavLink(
-                "https://dummyimage.com/128x128/000/fff",
-                "/app/guides",
-                "Guides",
-            )}
+            {@render navLink("https://dummyimage.com/128x128/000/fff", "/app/account", "Account")}
+
+            {@render navLink("https://dummyimage.com/128x128/000/fff", "/app", "Home")}
+
+            {@render navLink("https://dummyimage.com/128x128/000/fff", "/app/search", "Search")}
+
+            {@render navLink("https://dummyimage.com/128x128/000/fff", "/app/map", "Map")}
+
+            {@render navLink("https://dummyimage.com/128x128/000/fff", "/app/guides", "Guides")}
         </nav>
     </div>
 </div>
