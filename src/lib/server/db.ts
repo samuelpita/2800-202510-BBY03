@@ -28,12 +28,18 @@ export type UserDocument = {
 };
 
 export type TreeDocument = {
-    location: Point;
-    ageType: string;
-    species: string;
-    name: string;
-    height: number;
+	_id: ObjectId;
+	imageUrl?: string;
+	description?: string;
+	location: Point;
+	ageType?: string;
+	species: string;
+	name: string;
+	height?: number;
+	health?: string;
+	plantedDate?: string;
 };
+
 
 // Users Collection //
 
