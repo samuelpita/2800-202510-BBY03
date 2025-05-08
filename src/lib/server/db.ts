@@ -1,39 +1,76 @@
 import { MONGODB_DATABASE } from "$env/static/private";
-import { ObjectId } from "mongodb";
+import { ObjectId, type Document, type Filter } from "mongodb";
 import { startConnection } from "./mongo";
-import type { Point } from "geojson";
+import type { TreeDocument, UserDocument } from "./dbTypes";
 
 /*
+    Sam's instructions:
 
-Sam's instructions:
+    If you're adding export functions/types to this file, make sure that
+    they fit their purpose in the code, in order to keep things neat.
 
-If you're adding export functions/types to this file, make sure that
-they fit their purpose in the code, in order to keep things neat.
+    If it's a type for the documents in the database, add them in dbTypes.ts.
+    If it's collections related, add them to Collections.
+    If it's a CRUD function, add them to their respective comment below.
 
-If it's a type for the documents in the database, just add them under Types.
-If it's collections related, add them to Collections.
-If it's a CRUD function, add them to their respective comment below.
-
-If you have any questions, or have problems with TypeScript/SvelteKit,
-hit me up.
-
+    If you have any questions, or have problems with TypeScript/SvelteKit,
+    hit me up.
 */
 
-// Types //
+// Helper functions //
 
-export type UserDocument = {
-    email: string;
-    password: string;
-    username: string;
-};
+export function ensureId(id: ObjectId | string) {
+    if (typeof id == "string") return new ObjectId(id);
+    return id;
+}
 
-export type TreeDocument = {
-    location: Point;
-    ageType: string;
-    species: string;
-    name: string;
-    height: number;
-};
+// Adoption Collection //
+
+export function getAdoptionCollection() {
+    return startConnection().then((client) => {
+        return client.db(MONGODB_DATABASE).collection("adoption");
+    });
+}
+
+/**
+ * This function will attempt to adopt a tree with the given user and tree ids,
+ * and if the relationship doesn't exist in the collection, it will create a
+ * new one. Otherwise
+ */
+export function adoptTree(userId: ObjectId | string, treeId: ObjectId | string) {
+    return getAdoptionCollection().then(async (adoptions) => {
+        const adoptionDoc = await adoptions.findOne({
+            userId: ensureId(userId),
+            treeId: ensureId(treeId),
+        });
+
+        if (!adoptionDoc)
+            return adoptions.insertOne({
+                userId,
+                treeId,
+                active: true,
+                adoptionDate: { $setOnInsert: new Date() },
+            });
+
+        return null;
+    });
+}
+
+export function updateAdoptionNickname(userId: ObjectId, treeId: ObjectId, nickname: string) {
+    return getAdoptionCollection().then((adoptions) => {
+        return adoptions.updateOne(
+            {
+                userId,
+                treeId,
+            },
+            {
+                $set: {
+                    nickname,
+                },
+            },
+        );
+    });
+}
 
 // Users Collection //
 
@@ -62,6 +99,34 @@ export function findUserById(id: ObjectId | string) {
     });
 }
 
+// TreeStats Collection //
+
+export function getTreeStatsCollection() {
+    return startConnection().then((client) => {
+        return client.db(MONGODB_DATABASE).collection("treeStats");
+    });
+}
+
+// TreeSpecies Collection //
+
+export function getTreeSpeciesCollection() {
+    return startConnection().then((client) => {
+        return client.db(MONGODB_DATABASE).collection("treeSpecies");
+    });
+}
+
+export function findTreeSpeciesScientific(query: string, caseSensitive: boolean = false) {
+    return getTreeSpeciesCollection().then((treeSpecies) => {
+        const filter: Filter<Document> = {
+            $text: {
+                $search: query,
+                $caseSensitive: caseSensitive,
+            },
+        };
+        return treeSpecies.findOne(filter);
+    });
+}
+
 // Trees Collection //
 
 export function getTreesCollection() {
@@ -73,6 +138,12 @@ export function getTreesCollection() {
 export function insertTree(treeDocument: TreeDocument) {
     return getTreesCollection().then((trees) => {
         return trees.insertOne(treeDocument);
+    });
+}
+
+export function findTreeById(treeId: ObjectId) {
+    return getTreesCollection().then((trees) => {
+        return trees.findOne({ _id: treeId });
     });
 }
 
