@@ -9,14 +9,14 @@
     <header>
         <div class="mb-edge-d px-edge-d mx-auto max-w-4xl *:not-last:mb-2">
             <h1>
-                <img src="https://dummyimage.com/128x128/000/fff" alt="" class="size-nav inline" />
+                <img src="/logo.png" alt="" class="size-nav inline" />
                 <span class="align-middle">Lorax</span>
             </h1>
             <h5>designed for tree lovers, and those who speak for the trees</h5>
         </div>
 
-        <img src="https://dummyimage.com/1000x1000/000/fff" alt="" class="block w-full md:hidden" />
-        <img src="https://dummyimage.com/1280x320/000/fff" alt="" class="hidden w-full md:block" />
+        <img src="/header1.jpg" alt="" class="block w-full md:hidden" />
+        <img src="/header1.jpg" alt="" class="hidden w-full md:block" />
     </header>
 
     <section class="px-edge-d mx-auto max-w-4xl">
