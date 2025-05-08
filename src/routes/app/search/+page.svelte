@@ -6,7 +6,7 @@
   </script>
   
   <div class="p-6 max-w-5xl mx-auto">
-    <h1 class="text-3xl font-bold text-center text-green-700 mb-8">Search for Trees</h1>
+    <h1 class="text-3xl font-bold text-center text-orange-700 mb-8">Search for Trees</h1>
   
     <form method="GET" class="form-wrapper">
       <div>
