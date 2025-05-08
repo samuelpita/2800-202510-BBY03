@@ -30,6 +30,10 @@
     @apply flex-col md:odd:flex-row md:even:flex-row-reverse;
 }
 
+.p-search {
+    @apply px-edge-m pt-edge-m md:px-edge-d md:pt-edge-d pb-4;
+}
+
 .text-error {
     @apply text-red-500 dark:text-red-500;
 }
@@ -39,6 +43,10 @@
 }
 
 /* Element Variables */
+
+* {
+    @apply border-black dark:border-white;
+}
 
 body {
     @apply bg-light dark:bg-dark;
@@ -77,7 +85,7 @@ button {
 }
 
 input {
-    @apply font-sans text-black dark:text-white;
+    @apply font-sans;
 }
 
 label {

@@ -8,8 +8,6 @@
 
     let { data }: PageProps = $props();
 
-    let L;
-
     let mapDiv: HTMLDivElement;
     let map: Leaflet.Map;
 
@@ -37,8 +35,8 @@
 
     onMount(async () => {
         if (window !== undefined) {
-            const leaflet = await import("leaflet");
-            L = leaflet.default;
+            const L = (await import("leaflet")).default;
+            const GeoSearch = await import("leaflet-geosearch");
 
             map = L.map(mapDiv).setView([49.2487, -122.9875], 13);
 
@@ -57,6 +55,12 @@
                         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                 }).addTo(map);
             }
+
+            const search = GeoSearch.GeoSearchControl({
+                provider: new GeoSearch.OpenStreetMapProvider(),
+            });
+
+            map.addControl(search);
         }
     });
 </script>

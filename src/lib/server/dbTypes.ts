@@ -2,10 +2,11 @@ import { ObjectId } from "mongodb";
 import type { Point } from "geojson";
 
 /*
-    Add your document types here!
+    Add your DB types here!
 */
 
 export type ActionDocument = {
+    _id: ObjectId;
     adoptionId: ObjectId;
     type: string;
     data: {
@@ -14,69 +15,70 @@ export type ActionDocument = {
         tags?: string[];
         [key: string]: any;
     };
-    completionDate: Date | null;
-    creationDate: Date;
+    dateCompleted: Date | null;
+    dateCreated: Date;
 };
 
 export type AdoptionDocument = {
+    _id: ObjectId;
     userId: ObjectId;
     treeId: ObjectId;
     active: boolean;
-    adoptionDate: Date;
+    dateAdopted: Date;
 };
 
 export type AdoptionAchievementDocument = {
+    _id: ObjectId;
     adoptionId: ObjectId;
     type: string;
     goalValue: number;
     currentValue: number;
-    completionDate: Date | null;
+    dateCompleted: Date | null;
 };
 
 export type ReminderDocument = {
+    _id: ObjectId;
     actionId: ObjectId;
     remindAtDate: Date;
     notifyBefore: number;
 };
 
 export type TreeDocument = {
+    _id: ObjectId;
     treeSpeciesId: ObjectId;
-    name: string;
     location: Point;
-    plantDate: Date;
-    creationDate: Date;
+    datePlanted: Date;
+    dateCreated: Date;
 };
 
 export type TreeSpeciesDocument = {
-    commonNames: string[];
+    _id: ObjectId;
+    commonName: string;
     scientificName: string;
-    stages: {
-        seed: [number, number];
-        seedling: [number, number];
-        sapling: [number, number];
-        mature: [number, number];
-    } | null;
 };
 
 export type TreeStatsDocument = {
+    _id: ObjectId;
     treeId: ObjectId;
     age: number;
     height: number;
     health: string;
     stage: string;
-    updated: Date;
+    dateUpdated: Date;
 };
 
 export type UserDocument = {
+    _id: ObjectId;
     email: string;
     password: string;
     username: string;
 };
 
 export type UserAchievementDocument = {
+    _id: ObjectId;
     userId: ObjectId;
     type: string;
     goalValue: number;
     currentValue: number;
-    completionDate: Date | null;
+    dateCompleted: Date | null;
 };

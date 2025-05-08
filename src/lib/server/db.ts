@@ -1,6 +1,14 @@
 import { MONGODB_DATABASE } from "$env/static/private";
-import { ObjectId, type Document, type Filter } from "mongodb";
+import {
+    ObjectId,
+    type Abortable,
+    type AggregateOptions,
+    type Document,
+    type Filter,
+    type WithId,
+} from "mongodb";
 import { startConnection } from "./mongo";
+import type { BBox } from "geojson";
 import type { TreeDocument, UserDocument } from "./dbTypes";
 
 /*
@@ -28,35 +36,34 @@ export function ensureId(id: ObjectId | string) {
 
 export function getAdoptionCollection() {
     return startConnection().then((client) => {
-        return client.db(MONGODB_DATABASE).collection("adoption");
+        return client.db(MONGODB_DATABASE).collection("adoptions");
     });
 }
 
-/**
- * This function will attempt to adopt a tree with the given user and tree ids,
- * and if the relationship doesn't exist in the collection, it will create a
- * new one. Otherwise
- */
-export function adoptTree(userId: ObjectId | string, treeId: ObjectId | string) {
-    return getAdoptionCollection().then(async (adoptions) => {
-        const adoptionDoc = await adoptions.findOne({
+export function isTreeAdopted(userId: ObjectId | string, treeId: ObjectId | string) {
+    return getAdoptionCollection().then((adoptions) => {
+        return adoptions.findOne({
             userId: ensureId(userId),
             treeId: ensureId(treeId),
         });
+    });
+}
 
-        if (!adoptionDoc)
+export function adoptTree(userId: ObjectId | string, treeId: ObjectId | string) {
+    return getAdoptionCollection().then(async (adoptions) => {
+        if (!(await isTreeAdopted(userId, treeId)))
             return adoptions.insertOne({
-                userId,
-                treeId,
+                userId: ensureId(userId),
+                treeId: ensureId(treeId),
                 active: true,
-                adoptionDate: { $setOnInsert: new Date() },
+                dateAdopted: { $setOnInsert: new Date() },
             });
 
         return null;
     });
 }
 
-export function updateAdoptionNickname(userId: ObjectId, treeId: ObjectId, nickname: string) {
+export function setAdoptionNickname(userId: ObjectId, treeId: ObjectId, nickname: string) {
     return getAdoptionCollection().then((adoptions) => {
         return adoptions.updateOne(
             {
@@ -86,13 +93,13 @@ export function insertUser(userDocument: UserDocument) {
     });
 }
 
-export function findUserByEmail(email: string) {
+export function findUserEmail(email: string) {
     return getUsersCollection().then((users) => {
         return users.findOne({ email });
     });
 }
 
-export function findUserById(id: ObjectId | string) {
+export function findUserId(id: ObjectId | string) {
     return getUsersCollection().then((users) => {
         if (typeof id == "string") return users.findOne({ _id: new ObjectId(id) });
         return users.findOne({ _id: id });
@@ -107,6 +114,12 @@ export function getTreeStatsCollection() {
     });
 }
 
+export function findTreeStats(treeId: ObjectId | string) {
+    return getTreeStatsCollection().then((treeStats) => {
+        return treeStats.findOne({ treeId: ensureId(treeId) });
+    });
+}
+
 // TreeSpecies Collection //
 
 export function getTreeSpeciesCollection() {
@@ -115,16 +128,31 @@ export function getTreeSpeciesCollection() {
     });
 }
 
-export function findTreeSpeciesScientific(query: string, caseSensitive: boolean = false) {
+export function findTreeSpeciesId(id: ObjectId | string) {
     return getTreeSpeciesCollection().then((treeSpecies) => {
-        const filter: Filter<Document> = {
-            $text: {
-                $search: query,
-                $caseSensitive: caseSensitive,
-            },
-        };
-        return treeSpecies.findOne(filter);
+        return treeSpecies.findOne({ _id: ensureId(id) });
     });
+}
+
+export function findTreeSpeciesIdMatching(searchTerm: string, limit?: number) {
+    return getTreeSpeciesCollection()
+        .then((treeSpecies) => {
+            if (!limit) limit = 10;
+
+            const filter: Filter<Document> = {
+                $text: {
+                    $search: searchTerm,
+                    $caseSensitive: false,
+                },
+            };
+            return treeSpecies
+                .find(filter, { projection: { _id: 1 } })
+                .limit(limit)
+                .toArray();
+        })
+        .then((docs) => {
+            return docs.map((species) => species._id);
+        });
 }
 
 // Trees Collection //
@@ -141,24 +169,90 @@ export function insertTree(treeDocument: TreeDocument) {
     });
 }
 
-export function findTreeById(treeId: ObjectId) {
+export function findTreesAggregate(
+    pipeline?: Document[],
+    options?: AggregateOptions & Abortable,
+    limit?: number,
+) {
+    return getTreesCollection().then((trees) => {
+        if (!limit) limit = 10;
+        return trees.aggregate(pipeline, options).limit(limit).toArray();
+    });
+}
+
+export function findTreeId(treeId: ObjectId) {
     return getTreesCollection().then((trees) => {
         return trees.findOne({ _id: treeId });
     });
 }
 
-export function findTreesClosestToCoord(
+export function findTreesInBox(bbox: BBox, options?: { limit?: number }) {
+    return getTreesCollection().then((trees) => {
+        if (!options) options = {};
+        if (!options.limit) options.limit = 10;
+
+        return trees
+            .find({
+                location: {
+                    $geoWithin: {
+                        $box: [
+                            [bbox[0], bbox[1]],
+                            [bbox[2], bbox[3]],
+                        ],
+                    },
+                },
+            })
+            .limit(options.limit)
+            .toArray();
+    });
+}
+
+export function findTreesInBoxSpecies(species: string, bbox: BBox, options?: { limit?: number }) {
+    return getTreesCollection().then(async (trees) => {
+        if (!options) options = {};
+        if (!options.limit) options.limit = 10;
+
+        let pipeline: Document[];
+        const matchingSpecies = await findTreeSpeciesIdMatching(species, options.limit);
+
+        const matchFilter = {
+            $match: {
+                location: {
+                    $geoWithin: {
+                        $box: [
+                            [bbox[0], bbox[1]],
+                            [bbox[2], bbox[3]],
+                        ],
+                    },
+                },
+            },
+        };
+
+        const matchSpeciesFilter = {
+            $match: {
+                treeSpeciesId: { $in: matchingSpecies },
+            },
+        };
+
+        const limitFilter = {
+            $limit: options.limit,
+        };
+
+        if (species) pipeline = [matchFilter, matchSpeciesFilter, limitFilter];
+        else pipeline = [matchFilter, limitFilter];
+
+        return trees.aggregate(pipeline).toArray();
+    });
+}
+
+export function findTreesNearby(
     lat: number,
     long: number,
     options?: { limit?: number; maxDistance?: number },
 ) {
     return getTreesCollection().then((trees) => {
         if (!options) options = {};
-
-        // Set limit to 10 trees, if not specified.
         if (!options.limit) options.limit = 10;
-
-        // Set maxDistance to 50 kilometers by default.
         if (!options.maxDistance) options.maxDistance = 50 * 1000;
 
         return trees
@@ -170,13 +264,55 @@ export function findTreesClosestToCoord(
                             coordinates: [long, lat],
                         },
                         distanceField: "distance",
-                        spherical: true,
                         maxDistance: options.maxDistance,
+                        spherical: true,
                     },
                 },
                 { $sort: { distanceToCenter: 1 } },
             ])
             .limit(options.limit)
             .toArray();
+    });
+}
+
+export function findTreesNearbySpecies(
+    species: string,
+    lat: number,
+    long: number,
+    options?: { limit?: number; maxDistance?: number },
+) {
+    return getTreesCollection().then(async (trees) => {
+        if (!options) options = {};
+        if (!options.limit) options.limit = 10;
+        if (!options.maxDistance) options.maxDistance = 50 * 1000;
+
+        let pipeline: Document[];
+        const matchingSpecies = await findTreeSpeciesIdMatching(species, options.limit);
+
+        const geoNearFilter = {
+            $geoNear: {
+                near: {
+                    type: "Point",
+                    coordinates: [long, lat],
+                },
+                distanceField: "distance",
+                maxDistance: options.maxDistance,
+                spherical: true,
+            },
+        };
+        const matchSpeciesFilter = {
+            $match: {
+                treeSpeciesId: { $in: matchingSpecies },
+            },
+        };
+        const limitFilter = {
+            $limit: options.limit,
+        };
+
+        if (matchingSpecies.length != 0)
+            pipeline = [geoNearFilter, matchSpeciesFilter, limitFilter];
+        else pipeline = [geoNearFilter, limitFilter];
+
+        return trees.aggregate(pipeline).toArray();
     });
 }
