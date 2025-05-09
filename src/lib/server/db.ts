@@ -26,6 +26,14 @@ export type UserDocument = {
     username: string;
 };
 
+export type UserAchievementDocument = {
+    user_id: ObjectId; 
+    type: string;
+    goal: number;
+    value: number;
+    completionDate: Date | null;
+};
+
 // Collections //
 
 export function getUsersCollection() {
@@ -34,11 +42,23 @@ export function getUsersCollection() {
     });
 }
 
+export function getUserAchievementsCollection() {
+    return startConnection().then((client) => {
+        return client.db(MONGODB_DATABASE).collection("user_achievements");
+    });
+}
+
 // Create //
 
 export function insertUser(userDocument: UserDocument) {
     return getUsersCollection().then((users) => {
         return users.insertOne(userDocument);
+    });
+}
+
+export function insertUserAchievement(achievement: UserAchievementDocument) {
+    return getUserAchievementsCollection().then((achievements) => {
+        return achievements.insertOne(achievement);
     });
 }
 
@@ -54,6 +74,13 @@ export function findUserById(id: ObjectId | string) {
     return getUsersCollection().then((users) => {
         if (typeof id == "string") return users.findOne({ _id: new ObjectId(id) });
         return users.findOne({ _id: id });
+    });
+}
+
+export function findUserAchievementsByUserId(userId: ObjectId | string) {
+    return getUserAchievementsCollection().then((achievements) => {
+        const queryId = typeof userId === 'string' ? new ObjectId(userId) : userId;
+        return achievements.find({ user_id: queryId }).toArray();
     });
 }
 

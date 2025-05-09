@@ -1,55 +1,34 @@
 <script lang="ts">
-    import type { PageProps } from "./$types";
 
-    let { data }: PageProps = $props();
 </script>
 
-<div class="p-edge-d mx-auto max-w-4xl">
-    <section>
-        <h1>Hello</h1>
+<div class="p-edge-d mx-auto max-w-4xl space-y-6">
+    <header class="mb-4">
+        <h1 class="text-3xl font-bold">Lorax</h1>
+        <!-- Placeholder for Notifications -->
+        <div class="mt-2 rounded-lg dark:bg-dark-2 p-3">
+            <p class="text-sm text-gray-600">Notifications</p>
+        </div>
+    </header>
 
-        <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem eius dolore impedit,
-            laboriosam aliquam velit eaque tenetur quibusdam fuga, in placeat molestiae atque culpa
-            vero totam dolores consectetur exercitationem dolorum.
-        </p>
-
-        <div class="size-48 bg-purple-500"></div>
+    <section class="quick-actions">
+        <h2 class="mb-2 text-xl font-semibold">Quick Actions</h2>
+        <div class="rounded-lg dark:bg-dark-2 p-3">
+            <p class="text-sm text-gray-600"></p>
+        </div>
     </section>
 
-    <section>
-        <h3>Heading</h3>
-
-        <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem eius dolore impedit,
-            laboriosam aliquam velit eaque tenetur quibusdam fuga, in placeat molestiae atque culpa
-            vero totam dolores consectetur exercitationem dolorum.
-        </p>
-
-        <div class="size-48 bg-purple-500"></div>
+    <section class="adopted-trees-section">
+        <h2 class="mb-2 text-xl font-semibold">Adopted Trees</h2>
+        <div class="rounded-lg dark:bg-dark-2 p-3">
+            <p class="text-sm text-gray-600">tree list</p>
+        </div>
     </section>
 
-    <section>
-        <h3>Heading</h3>
-
-        <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem eius dolore impedit,
-            laboriosam aliquam velit eaque tenetur quibusdam fuga, in placeat molestiae atque culpa
-            vero totam dolores consectetur exercitationem dolorum.
-        </p>
-
-        <div class="size-48 bg-purple-500"></div>
-    </section>
-
-    <section>
-        <h3>Heading</h3>
-
-        <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem eius dolore impedit,
-            laboriosam aliquam velit eaque tenetur quibusdam fuga, in placeat molestiae atque culpa
-            vero totam dolores consectetur exercitationem dolorum.
-        </p>
-
-        <div class="size-48 bg-purple-500"></div>
+    <section class="trees-near-you">
+        <h2 class="mb-2 text-xl font-semibold">Trees Near You</h2>
+        <div class="flex h-48 items-center justify-center rounded-lg dark:bg-dark-2 p-3">
+            <p class="text-gray-500">(Map or List view)</p>
+        </div>
     </section>
 </div>

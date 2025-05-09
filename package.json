@@ -19,6 +19,7 @@
         "@sveltejs/vite-plugin-svelte": "^5.0.0",
         "@tailwindcss/vite": "^4.0.0",
         "@types/bcrypt": "^5.0.2",
+        "@types/bcryptjs": "^2.4.6",
         "mdsvex": "^0.12.3",
         "prettier": "^3.4.2",
         "prettier-plugin-svelte": "^3.3.3",
@@ -31,6 +32,7 @@
     },
     "dependencies": {
         "bcrypt": "^5.1.1",
+        "bcryptjs": "^3.0.2",
         "leaflet": "^1.9.4",
         "mongodb": "^6.16.0"
     }
