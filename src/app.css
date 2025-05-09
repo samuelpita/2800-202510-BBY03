@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Amaranth:ital,wght@0,400;0,700;1,400;1,700&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
 @import "tailwindcss";
 
 /* Theme Variables */
@@ -41,7 +43,7 @@
 /* Element Variables */
 
 body {
-    @apply bg-light dark:bg-dark;
+    @apply bg-orange-300 dark:bg-orange-800;
 }
 
 h1 {
@@ -69,7 +71,7 @@ h6 {
 }
 
 a {
-    @apply font-sans text-black dark:text-white;
+    @apply text-black dark:text-white;
 }
 
 button {

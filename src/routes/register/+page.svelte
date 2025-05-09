@@ -1,18 +1,25 @@
 <script lang="ts">
+    import LandingFooter from "../LandingFooter.svelte";
+    import LandingNavBar from "../LandingNavBar.svelte";
+    
     import type { PageProps } from "./$types";
 
     let { form }: PageProps = $props();
 </script>
 
+<LandingNavBar />
+
 <main class="my-edge-d">
     <div
-        class="p-edge-d bg-light-2 dark:bg-dark-2 *:not-last:mb-edge-d rounded-outer mx-auto max-w-xl"
-    >
+        class="p-edge-d bg-light-2 dark:bg-orange-600 *:not-last:mb-edge-d rounded-outer mx-auto max-w-xl mask-b-from-85% mask-t-from-85% border-2 border-white"
+    >   
+        <!--
         <a href="/" class="inline-block size-12">
             <img src="https://dummyimage.com/48x48/000/fff" alt="" />
         </a>
+        -->
 
-        <h1>Sign up for Lorax</h1>
+        <h2 class="mt-16">Sign up for Lorax</h2>
 
         {#if form?.serverIssue}
             <p class="text-error">
@@ -82,6 +89,6 @@
             <button class="rounded-inner w-full border p-2">Register</button>
         </form>
 
-        <a href="/login" class="text-link">I already have an account!</a>
+        <a href="/login" class="text-link"><p class="text-white mb-16">I already have an account!</p></a>
     </div>
 </main>
