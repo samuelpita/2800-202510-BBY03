@@ -253,3 +253,11 @@ p {
         @apply justify-center px-0;
     }
 }
+
+/* Weather Card Styles */
+.weather-box {
+        @apply bg-orange-200 text-orange-500 px-4 py-2 rounded-md text-sm shadow flex items-center;
+    }
+.weather-error {
+    @apply text-red-600 text-sm;
+}
