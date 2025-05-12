@@ -6,6 +6,6 @@ export const load: PageServerLoad = async ({ cookies }) => {
     const sessionId = cookies.get("sessionid");
     const userId = cookies.get("userId");
 
-    if (sessionId && userId) deleteAuthCookies(cookies);
+    if (sessionId || userId) deleteAuthCookies(cookies);
     throw redirect(303, "/login");
 };

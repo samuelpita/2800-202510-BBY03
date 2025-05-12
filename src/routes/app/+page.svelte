@@ -1,4 +1,10 @@
 <script lang="ts">
+     // Quick action types
+     const quickActions = [
+        { title: 'Adopt a Tree', icon: '🌳', link: '/app/search' },
+        { title: 'Log Tree Care', icon: '🛠️', link: '/app/actions/new' },
+        { title: 'View My Profile', icon: '👤', link: '/app/account' }
+    ];
 
 </script>
 
@@ -14,9 +20,17 @@
     <section class="quick-actions">
         <h2 class="mb-2 text-xl font-semibold">Quick Actions</h2>
         <div class="rounded-lg dark:bg-dark-2 p-3">
-            <p class="text-sm text-gray-600"></p>
+            <div class="flex flex-wrap gap-2">
+                {#each quickActions as action}
+                    <a href={action.link} class="flex-1 min-w-32 rounded-md bg-primary-600 p-3 text-center text-white hover:bg-primary-700">
+                        <div class="text-2xl">{action.icon}</div>
+                        <div class="mt-1 text-sm">{action.title}</div>
+                    </a>
+                {/each}
+            </div>
         </div>
     </section>
+
 
     <section class="adopted-trees-section">
         <h2 class="mb-2 text-xl font-semibold">Adopted Trees</h2>

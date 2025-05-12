@@ -38,3 +38,9 @@ export function getEmptyFields(form: FormData, includeOnly?: string[]) {
 
     return missing;
 }
+
+// Window helper functions //
+
+export function isDarkMode() {
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+}
