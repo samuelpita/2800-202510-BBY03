@@ -38,21 +38,3 @@ export function insertUser(email: string, password: string, username: string) {
         });
     });
 }
-
-export function searchUser(text: string, options?: { limit?: number; caseSensitive?: boolean }) {
-    return getUsersCollection().then((users) => {
-        if (!options) options = {};
-        if (!options.limit) options.limit = 10;
-        if (!options.caseSensitive) options.caseSensitive = false;
-
-        return users
-            .find({
-                $text: {
-                    $search: text,
-                    $caseSensitive: options.caseSensitive,
-                },
-            })
-            .limit(options.limit)
-            .toArray();
-    });
-}

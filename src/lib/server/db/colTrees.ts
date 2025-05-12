@@ -30,10 +30,10 @@ export function findTreeSpeciesId(id: ObjectId | string) {
 }
 
 /**
- * Returns IDs of treeSpecies documents that match the given text search
- * parameter.
+ * Returns an array of IDs of Tree Species documents that match the given
+ * text search parameter.
  */
-export function searchTreeSpecies(text: string, options?: { limit?: number }) {
+export function searchTreeSpeciesIdArray(text: string, options?: { limit?: number }) {
     return getTreeSpeciesCollection()
         .then((treeSpecies) => {
             if (!options) options = {};
@@ -171,7 +171,7 @@ export function findTreesNearPoint(coordinates: Position, options?: TreeOptionsN
         });
 
         if (options.speciesSearch) {
-            const matchingSpecies = await searchTreeSpecies(options.speciesSearch, {
+            const matchingSpecies = await searchTreeSpeciesIdArray(options.speciesSearch, {
                 limit: options.limit,
             });
 
@@ -183,6 +183,8 @@ export function findTreesNearPoint(coordinates: Position, options?: TreeOptionsN
                 },
                 ...speciesInfoPipeline,
             );
+        } else {
+            pipeline.push(...speciesInfoPipeline);
         }
 
         if (options.projectStage) pipeline.push({ $project: options.projectStage });
@@ -219,7 +221,7 @@ export function findTreesInBox(bbox: BBox, options?: TreeOptionsInBox) {
         });
 
         if (options.speciesSearch) {
-            const matchingSpecies = await searchTreeSpecies(options.speciesSearch, {
+            const matchingSpecies = await searchTreeSpeciesIdArray(options.speciesSearch, {
                 limit: options.limit,
             });
 
@@ -231,6 +233,8 @@ export function findTreesInBox(bbox: BBox, options?: TreeOptionsInBox) {
                 },
                 ...speciesInfoPipeline,
             );
+        } else {
+            pipeline.push(...speciesInfoPipeline);
         }
 
         if (options.projectStage) pipeline.push({ $project: options.projectStage });
