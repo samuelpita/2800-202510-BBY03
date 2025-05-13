@@ -48,26 +48,16 @@ export type AdoptionAchievementDocument = AchievementDocument & {
 
 //#region Trees
 
-export type TreeAge = "seed" | "seedling" | "sapling" | "mature";
-
 export type TreeDocument = {
     treeSpeciesId: ObjectId;
     location: Point;
     datePlanted: Date;
     dateCreated: Date;
-    stats?: TreeStats;
 };
 
 export type TreeSpeciesDocument = {
     commonName: string;
     scientificName: string;
-};
-
-export type TreeStats = {
-    dateUpdated: Date;
-    age?: TreeAge;
-    diameter?: number;
-    height?: number;
 };
 
 //#endregion
