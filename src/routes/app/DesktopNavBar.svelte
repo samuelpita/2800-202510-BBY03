@@ -4,6 +4,7 @@
     import { page } from '$app/stores';
     import { derived } from 'svelte/store';
 
+
     let dWideNav = $state(true); // open by default
     const currentPath = derived(page, ($page) => $page.url.pathname);
 </script>
@@ -18,6 +19,8 @@
             {/if}
         </div>
     </a>
+   
+
 {/snippet}
 
 <!-- Desktop Sidebar Only -->
