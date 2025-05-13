@@ -6,6 +6,10 @@
     function divStyle() {
         return dWideNav ? "w-56" : "w-ico";
     }
+
+    function sidebarButtonStyle() {
+        return dWideNav ? "rotate-180" : "rotate-0";
+    }
 </script>
 
 {#snippet navLink(src: string, href: string, name: string)}
@@ -24,7 +28,11 @@
                 dWideNav = !dWideNav;
             }}
         >
-            <img src="https://dummyimage.com/128x128/000/fff" alt="" class="size-ico" />
+            <img
+                src="/icons/chevron-right.svg"
+                alt=""
+                class="{sidebarButtonStyle()} size-ico transition-all dark:invert"
+            />
         </button>
 
         <a href="/" class="flex w-full items-center gap-2">

@@ -4,6 +4,23 @@ import { NUM_SALTS } from "$env/static/private";
 import type { CookieSerializeOptions } from "cookie";
 import type { Cookies } from "@sveltejs/kit";
 
+// Check if user is logged in //
+
+export function onLoggedIn(
+    cookies: Cookies,
+    callback?: (sessionId: string, userId: string) => void,
+) {
+    const sessionId = cookies.get("sessionid");
+    const userId = cookies.get("userId");
+
+    if (sessionId && userId) {
+        if (callback) return callback(sessionId, userId);
+        return true;
+    }
+
+    return false;
+}
+
 // Password Hashing //
 
 export function getHashedPassword(password: string) {

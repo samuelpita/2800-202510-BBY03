@@ -1,77 +1,83 @@
 import { MONGODB_DATABASE } from "$env/static/private";
-import { ObjectId } from "mongodb";
+import {
+    ObjectId,
+    type Abortable,
+    type AggregateOptions,
+    type Document,
+    type Filter,
+    type WithId,
+} from "mongodb";
 import { startConnection } from "./mongo";
-import type { Point } from "geojson";
+import type { BBox } from "geojson";
+import type { TreeDocument, UserDocument } from "./dbTypes";
 
 /*
+    Sam's instructions:
 
-Sam's instructions:
+    If you're adding export functions/types to this file, make sure that
+    they fit their purpose in the code, in order to keep things neat.
 
-If you're adding export functions/types to this file, make sure that
-they fit their purpose in the code, in order to keep things neat.
+    If it's a type for the documents in the database, add them in dbTypes.ts.
+    If it's collections related, add them to Collections.
+    If it's a CRUD function, add them to their respective comment below.
 
-If it's a type for the documents in the database, just add them under Types.
-If it's collections related, add them to Collections.
-If it's a CRUD function, add them to their respective comment below.
-
-If you have any questions, or have problems with TypeScript/SvelteKit,
-hit me up.
-
+    If you have any questions, or have problems with TypeScript/SvelteKit,
+    hit me up.
 */
 
-// Types //
+// Helper functions //
 
-export type UserDocument = {
-    email: string;
-    password: string;
-    username: string;
-};
+export function ensureId(id: ObjectId | string) {
+    if (typeof id == "string") return new ObjectId(id);
+    return id;
+}
 
-export type UserAchievementDocument = {
-    user_id: ObjectId; 
-    type: string;
-    goal: number;
-    value: number;
-    completionDate: Date | null;
-};
+// Adoption Collection //
 
-export type AdoptionDocument = {
-    adoption_id?: ObjectId;
-    user_id: ObjectId;
-    tree_id: ObjectId;
-    active: boolean;
-    adoptionDate: Date;
-};
+export function getAdoptionCollection() {
+    return startConnection().then((client) => {
+        return client.db(MONGODB_DATABASE).collection("adoptions");
+    });
+}
 
-export type ActionDocument = {
-    action_id?: ObjectId;
-    adoption_id: ObjectId;
-    type: string;
-    date: Date;
-    details: string;
-    tags: string[];
-    completionDate: Date | null;
-    creationDate: Date;
-};
+export function isTreeAdopted(userId: ObjectId | string, treeId: ObjectId | string) {
+    return getAdoptionCollection().then((adoptions) => {
+        return adoptions.findOne({
+            userId: ensureId(userId),
+            treeId: ensureId(treeId),
+        });
+    });
+}
 
-export type TreeStateDocument = {
-    tree_state_id?: ObjectId;
-    tree_id: ObjectId;
-    age: number;
-    stage: string;
-    height: number;
-    health: string;
-    updated: Date;
-};
+export function adoptTree(userId: ObjectId | string, treeId: ObjectId | string) {
+    return getAdoptionCollection().then(async (adoptions) => {
+        if (!(await isTreeAdopted(userId, treeId)))
+            return adoptions.insertOne({
+                userId: ensureId(userId),
+                treeId: ensureId(treeId),
+                active: true,
+                dateAdopted: { $setOnInsert: new Date() },
+            });
 
-// Collections //
-export type TreeDocument = {
-    location: Point;
-    ageType: string;
-    species: string;
-    name: string;
-    height: number;
-};
+        return null;
+    });
+}
+
+export function setAdoptionNickname(userId: ObjectId, treeId: ObjectId, nickname: string) {
+    return getAdoptionCollection().then((adoptions) => {
+        return adoptions.updateOne(
+            {
+                userId,
+                treeId,
+            },
+            {
+                $set: {
+                    nickname,
+                },
+            },
+        );
+    });
+}
 
 // Users Collection //
 
@@ -113,61 +119,68 @@ export function insertUser(userDocument: UserDocument) {
     });
 }
 
-export function insertUserAchievement(achievement: UserAchievementDocument) {
-    return getUserAchievementsCollection().then((achievements) => {
-        return achievements.insertOne(achievement);
-    });
-}
-
-export function insertAdoption(adoption: AdoptionDocument) {
-    return getAdoptionsCollection().then((adoptions) => {
-        return adoptions.insertOne(adoption);
-    });
-}
-
-export function insertAction(action: ActionDocument) {
-    return getActionsCollection().then((actions) => {
-        return actions.insertOne(action);
-    });
-}
-
-// Read //
-
-export function findUserByEmail(email: string) {
+export function findUserEmail(email: string) {
     return getUsersCollection().then((users) => {
         return users.findOne({ email });
     });
 }
 
-export function findUserById(id: ObjectId | string) {
+export function findUserId(id: ObjectId | string) {
     return getUsersCollection().then((users) => {
         if (typeof id == "string") return users.findOne({ _id: new ObjectId(id) });
         return users.findOne({ _id: id });
     });
 }
 
-export function findUserAchievementsByUserId(userId: ObjectId | string) {
-    return getUserAchievementsCollection().then((achievements) => {
-        const queryId = typeof userId === 'string' ? new ObjectId(userId) : userId;
-        return achievements.find({ user_id: queryId }).toArray();
+// TreeStats Collection //
+
+export function getTreeStatsCollection() {
+    return startConnection().then((client) => {
+        return client.db(MONGODB_DATABASE).collection("treeStats");
     });
 }
 
-export function findAdoptionsByUserId(userId: ObjectId | string) {
-    return getAdoptionsCollection().then((adoptions) => {
-        const queryId = typeof userId === 'string' ? new ObjectId(userId) : userId;
-        return adoptions.find({ user_id: queryId, active: true }).toArray();
+export function findTreeStats(treeId: ObjectId | string) {
+    return getTreeStatsCollection().then((treeStats) => {
+        return treeStats.findOne({ treeId: ensureId(treeId) });
     });
 }
 
-export function findActionsByAdoptionId(adoptionId: ObjectId | string) {
-    return getActionsCollection().then((actions) => {
-        const queryId = typeof adoptionId === 'string' ? new ObjectId(adoptionId) : adoptionId;
-        return actions.find({ adoption_id: queryId }).sort({ date: -1 }).toArray();
+// TreeSpecies Collection //
+
+export function getTreeSpeciesCollection() {
+    return startConnection().then((client) => {
+        return client.db(MONGODB_DATABASE).collection("treeSpecies");
     });
 }
 
-// Update //
+export function findTreeSpeciesId(id: ObjectId | string) {
+    return getTreeSpeciesCollection().then((treeSpecies) => {
+        return treeSpecies.findOne({ _id: ensureId(id) });
+    });
+}
+
+export function findTreeSpeciesIdMatching(searchTerm: string, limit?: number) {
+    return getTreeSpeciesCollection()
+        .then((treeSpecies) => {
+            if (!limit) limit = 10;
+
+            const filter: Filter<Document> = {
+                $text: {
+                    $search: searchTerm,
+                    $caseSensitive: false,
+                },
+            };
+            return treeSpecies
+                .find(filter, { projection: { _id: 1 } })
+                .limit(limit)
+                .toArray();
+        })
+        .then((docs) => {
+            return docs.map((species) => species._id);
+        });
+}
+
 // Trees Collection //
 
 export function getTreesCollection() {
@@ -182,18 +195,90 @@ export function insertTree(treeDocument: TreeDocument) {
     });
 }
 
-export function findTreesClosestToCoord(
+export function findTreesAggregate(
+    pipeline?: Document[],
+    options?: AggregateOptions & Abortable,
+    limit?: number,
+) {
+    return getTreesCollection().then((trees) => {
+        if (!limit) limit = 10;
+        return trees.aggregate(pipeline, options).limit(limit).toArray();
+    });
+}
+
+export function findTreeId(treeId: ObjectId) {
+    return getTreesCollection().then((trees) => {
+        return trees.findOne({ _id: treeId });
+    });
+}
+
+export function findTreesInBox(bbox: BBox, options?: { limit?: number }) {
+    return getTreesCollection().then((trees) => {
+        if (!options) options = {};
+        if (!options.limit) options.limit = 10;
+
+        return trees
+            .find({
+                location: {
+                    $geoWithin: {
+                        $box: [
+                            [bbox[0], bbox[1]],
+                            [bbox[2], bbox[3]],
+                        ],
+                    },
+                },
+            })
+            .limit(options.limit)
+            .toArray();
+    });
+}
+
+export function findTreesInBoxSpecies(species: string, bbox: BBox, options?: { limit?: number }) {
+    return getTreesCollection().then(async (trees) => {
+        if (!options) options = {};
+        if (!options.limit) options.limit = 10;
+
+        let pipeline: Document[];
+        const matchingSpecies = await findTreeSpeciesIdMatching(species, options.limit);
+
+        const matchFilter = {
+            $match: {
+                location: {
+                    $geoWithin: {
+                        $box: [
+                            [bbox[0], bbox[1]],
+                            [bbox[2], bbox[3]],
+                        ],
+                    },
+                },
+            },
+        };
+
+        const matchSpeciesFilter = {
+            $match: {
+                treeSpeciesId: { $in: matchingSpecies },
+            },
+        };
+
+        const limitFilter = {
+            $limit: options.limit,
+        };
+
+        if (species) pipeline = [matchFilter, matchSpeciesFilter, limitFilter];
+        else pipeline = [matchFilter, limitFilter];
+
+        return trees.aggregate(pipeline).toArray();
+    });
+}
+
+export function findTreesNearby(
     lat: number,
     long: number,
     options?: { limit?: number; maxDistance?: number },
 ) {
     return getTreesCollection().then((trees) => {
         if (!options) options = {};
-
-        // Set limit to 10 trees, if not specified.
         if (!options.limit) options.limit = 10;
-
-        // Set maxDistance to 50 kilometers by default.
         if (!options.maxDistance) options.maxDistance = 50 * 1000;
 
         return trees
@@ -205,8 +290,8 @@ export function findTreesClosestToCoord(
                             coordinates: [long, lat],
                         },
                         distanceField: "distance",
-                        spherical: true,
                         maxDistance: options.maxDistance,
+                        spherical: true,
                     },
                 },
                 { $sort: { distanceToCenter: 1 } },
@@ -216,9 +301,44 @@ export function findTreesClosestToCoord(
     });
 }
 
-export function findTreeById(id: ObjectId | string) {
-    return getTreesCollection().then((trees) => {
-        const queryId = typeof id === 'string' ? new ObjectId(id) : id;
-        return trees.findOne({ _id: queryId });
+export function findTreesNearbySpecies(
+    species: string,
+    lat: number,
+    long: number,
+    options?: { limit?: number; maxDistance?: number },
+) {
+    return getTreesCollection().then(async (trees) => {
+        if (!options) options = {};
+        if (!options.limit) options.limit = 10;
+        if (!options.maxDistance) options.maxDistance = 50 * 1000;
+
+        let pipeline: Document[];
+        const matchingSpecies = await findTreeSpeciesIdMatching(species, options.limit);
+
+        const geoNearFilter = {
+            $geoNear: {
+                near: {
+                    type: "Point",
+                    coordinates: [long, lat],
+                },
+                distanceField: "distance",
+                maxDistance: options.maxDistance,
+                spherical: true,
+            },
+        };
+        const matchSpeciesFilter = {
+            $match: {
+                treeSpeciesId: { $in: matchingSpecies },
+            },
+        };
+        const limitFilter = {
+            $limit: options.limit,
+        };
+
+        if (matchingSpecies.length != 0)
+            pipeline = [geoNearFilter, matchSpeciesFilter, limitFilter];
+        else pipeline = [geoNearFilter, limitFilter];
+
+        return trees.aggregate(pipeline).toArray();
     });
 }
