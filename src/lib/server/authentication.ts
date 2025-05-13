@@ -4,8 +4,9 @@ import { NUM_SALTS } from "$env/static/private";
 import type { CookieSerializeOptions } from "cookie";
 import type { Cookies } from "@sveltejs/kit";
 
-// Check if user is logged in //
-
+/**
+ * Checks if the user is logged in by looking at the cookies.
+ */
 export function onLoggedIn(
     cookies: Cookies,
     callback?: (sessionId: string, userId: string) => void,
@@ -23,10 +24,16 @@ export function onLoggedIn(
 
 // Password Hashing //
 
+/**
+ * Extension of bcrypt.hashSync, with a determined number of salt rounds.
+ */
 export function getHashedPassword(password: string) {
     return bcrypt.hashSync(password, parseInt(NUM_SALTS));
 }
 
+/**
+ * Extension of bcrypt.compareSync.
+ */
 export function passwordMatchesHash(password: string, hash: string) {
     return bcrypt.compareSync(password, hash);
 }

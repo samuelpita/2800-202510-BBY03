@@ -1,6 +1,6 @@
 import { stringStartsWithAny } from "$lib";
-import { findUserId } from "$lib/server/db";
-import { endConnection } from "$lib/server/mongo";
+import { findUserId } from "$lib/server/db/colUsers";
+import { endConnection } from "$lib/server/db/mongo";
 import type { Handle } from "@sveltejs/kit";
 
 export const handle: Handle = async ({ event, resolve }) => {

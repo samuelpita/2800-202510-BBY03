@@ -1,6 +1,6 @@
 import { createAuthCookies, passwordMatchesHash } from "$lib/server/authentication";
-import { findUserEmail } from "$lib/server/db";
-import { endConnection } from "$lib/server/mongo";
+import { findUserEmail } from "$lib/server/db/colUsers";
+import { endConnection } from "$lib/server/db/mongo";
 import { getEmptyFields, objectifyFormData } from "$lib";
 import { fail, redirect } from "@sveltejs/kit";
 import type { Actions, PageServerLoad } from "./$types";

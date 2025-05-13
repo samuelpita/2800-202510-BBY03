@@ -1,146 +1,195 @@
 <script lang="ts">
-    import type { LocationResult, TreeResult } from "$lib/search";
+    import { page } from "$app/state";
+    import type { PageData } from "./$types";
 
-    let { data } = $props();
+    type SearchOption = "all" | "location" | "species" | "user";
 
-    let showFilters: boolean = $state(true);
+    const searchPlaceholders = {
+        all: "Search here",
+        location: "Search location",
+        species: "Search species name",
+        user: "Search username",
+    };
 
-    function filterDivStyle() {
-        return showFilters ? "max-h-12 opacity-100 border" : "max-h-0 opacity-0";
-    }
+    let search = $state("");
+    let searchFocus = $state(false);
+    let searchMode: SearchOption = $state("all");
 
-    function buttonImgStyle() {
-        return showFilters ? "rotate-180" : "rotate-0";
-    }
+    let params = $derived(page.url.searchParams);
 
-    function locationLastTwo(location: LocationResult) {
-        if (!location.properties) return;
-
-        const locNameArr: string[] = location.properties.display_name.split(", ");
-        return `${locNameArr[locNameArr.length - 2]}, ${locNameArr[locNameArr.length - 1]}`;
-    }
+    let { data }: { data: PageData } = $props();
 </script>
 
-<!-- Snippets -->
-{#snippet locationCard(location: LocationResult)}
-    <a href="/app/map" aria-label="city" class="flex items-center gap-2 rounded border p-2">
-        <img src="https://dummyimage.com/128x128/000/fff" alt="" class="size-16" />
-        <div>
-            <h5>{location.properties?.name}</h5>
-            <p>{locationLastTwo(location)}</p>
+{#snippet dropdownSearchButton(option: SearchOption, message: [string, string])}
+    <button
+        type="submit"
+        onclick={() => {
+            searchMode = option;
+        }}
+    >
+        {message[0]} "{search}" {message[1]}
+    </button>
+{/snippet}
+
+{#snippet locationResultCard(href: string, heading: string, body: string)}
+    <a {href} class="*:capitalize">
+        <h4>{heading}</h4>
+        <p>{body}</p>
+    </a>
+{/snippet}
+
+{#snippet treeResultCard(id: string, heading: string, body: string, distance_m: number | string)}
+    <a href="/app/tree/{id}">
+        <div class="flex items-center">
+            <img src="/icons/tree.svg" alt="" class="mr-2 size-8 dark:invert" />
+            <div class="w-full *:capitalize">
+                <h5>{heading}</h5>
+                <p>{body}</p>
+            </div>
+            <p class="min-w-max">{distance_m} m</p>
         </div>
     </a>
 {/snippet}
 
-{#snippet treeCard(tree: TreeResult)}
-    <a href="/app/tree/{tree.id}" aria-label="tree" class="mb-2 block rounded border p-2">
-        <h5 class="capitalize">{tree.commonName.toLowerCase()}</h5>
-        <p class="capitalize">{tree.scientificName.toLowerCase()}</p>
-        <p>{Math.round(tree.distance)} m</p>
-    </a>
-{/snippet}
-
-<!-- Form -->
-<form class="p-search mx-auto max-w-xl *:not-last:mb-2">
-    <label class="flex divide-x rounded border *:p-2">
-        <input type="text" name="search" placeholder="Search here" class="w-full" />
-        <button type="submit">Search</button>
-    </label>
-
-    <button
-        type="button"
-        class="flex gap-2 transition-all"
-        onclick={() => {
-            showFilters = !showFilters;
-        }}
-    >
-        <span>Filter</span>
-        <img
-            src="/icons/chevron-down.svg"
-            alt=""
-            class="size-6 transition dark:invert {buttonImgStyle()}"
-        />
-    </button>
-
-    <div class="{filterDivStyle()} divide-y overflow-hidden rounded transition-all">
-        <label class="flex items-center divide-x *:p-2">
-            <span class="w-full max-w-32">Species</span>
-            <input type="text" name="species" class="w-full" />
-        </label>
-        <!-- <label class="flex items-center divide-x *:p-2">
-            <span class="w-full max-w-32">Height</span>
-            <input type="number" name="height" class="w-full" placeholder="(in meters)" />
-        </label> -->
-    </div>
-</form>
-
-<!-- Search Results -->
-{#if data.searchResults}
-    <div class="px-edge-m md:px-edge-d mx-auto max-w-xl *:mb-8">
-        {#each data.searchResults as { locationResult, treeResults }}
-            <div class="*:not-last:mb-2">
-                {@render locationCard(locationResult)}
+{#snippet displayAllResults()}
+    {#if data.treesResultArray}
+        {#each data.treesResultArray as { locationResult, treeResults }}
+            <div class="divide-y rounded border *:block *:p-2">
+                {@render locationResultCard(
+                    "/",
+                    locationResult.properties.name,
+                    `${locationResult.properties.address.state}, ${locationResult.properties.address.country}`,
+                )}
 
                 {#each treeResults as treeResult}
-                    {@render treeCard(treeResult)}
+                    {@render treeResultCard(
+                        treeResult._id,
+                        treeResult.commonName,
+                        treeResult.scientificName,
+                        treeResult.distance ? Math.round(treeResult.distance) : "",
+                    )}
                 {/each}
 
                 {#if treeResults.length == 0}
-                    <p>No trees in this area.</p>
+                    <p>No trees to show in this area.</p>
                 {/if}
             </div>
         {/each}
-    </div>
-{/if}
-
-<!-- <div class="mx-auto max-w-5xl p-6">
-    <h1 class="mb-8 text-center text-3xl font-bold text-green-700">Search for Trees</h1>
-
-    <form method="GET" class="form-wrapper">
-        <div>
-            <label for="species" class="input-label">Species</label>
-            <input
-                id="species"
-                name="species"
-                placeholder="e.g., oak, maple"
-                bind:value={species}
-                class="input-field"
-            />
-        </div>
-
-        <div>
-            <label for="location" class="input-label">Location</label>
-            <input
-                id="location"
-                name="location"
-                placeholder="e.g., Burnaby"
-                bind:value={location}
-                class="input-field"
-            />
-        </div>
-
-        <div class="text-right">
-            <button type="submit" class="search-button">Search Trees</button>
-        </div>
-    </form>
-
-    {#if data.trees.length}
-        <div class="tree-grid">
-            {#each data.trees as tree}
-                <a href={`/app/tree/${tree._id}`} class="tree-card">
-                    {#if tree.imageUrl}
-                        <img src={tree.imageUrl} alt={tree.name} class="tree-card-image" />
-                    {:else}
-                        <div class="tree-card-placeholder">No Image</div>
-                    {/if}
-                    <h2 class="tree-title">{tree.name}</h2>
-                    <p class="tree-subtext">{tree.species} • {tree.location}</p>
-                </a>
-            {/each}
-        </div>
-    {:else if data.searched}
-        <p class="mt-8 text-center text-sm text-gray-600">
-            No trees found with the selected filters.
-        </p>
     {/if}
-</div> -->
+{/snippet}
+
+<!-- 
+{#snippet dropdownSearchButton(input: string, option: SearchOption)}
+    <button
+        type="submit"
+        onclick={() => {
+            searchMode = option;
+        }}
+    >
+        {input} as {option}
+    </button>
+{/snippet}
+
+<form class="mx-auto max-w-xl">
+    <div class="*:flex">
+        <label class="justify-between divide-x border *:p-2">
+            {#if ["location", "species", "user"].includes(searchMode)}
+                <button
+                    type="button"
+                    onclick={() => {
+                        searchMode = "all";
+                    }}
+                    class="flex grow items-center gap-2"
+                >
+                    <span>{searchMode}</span>
+                    <img
+                        src="https://dummyimage.com/64x64/000/fff"
+                        alt="Close button"
+                        class="size-4"
+                    />
+                </button>
+            {/if}
+            <input
+                type="text"
+                name={searchMode}
+                bind:value={search}
+                placeholder="Search here"
+                class="w-full"
+            />
+            <button type="submit">Search</button>
+        </label>
+        {#if search}
+            <div class="flex-col divide-y border-x border-b *:p-2">
+                {@render dropdownSearchButton(search, "location")}
+                {@render dropdownSearchButton(search, "species")}
+                {@render dropdownSearchButton(search, "user")}
+            </div>
+        {/if}
+    </div>
+
+    <div class="*:flex">
+        <label>
+            <span></span>
+            <input type="text" name="species" />
+        </label>
+    </div>
+</form> -->
+
+<form class="p-edge-m mx-auto max-w-2xl *:not-last:mb-4">
+    <div class="divide-y rounded border *:flex *:*:p-2">
+        <!-- Search Bar -->
+        <label class="divide-x">
+            {#if ["location", "species", "user"].includes(searchMode)}
+                <button
+                    type="button"
+                    class="min-w-max"
+                    onclick={() => {
+                        searchMode = "all";
+                    }}
+                >
+                    <span class="align-middle capitalize">{searchMode}</span>
+                    <img src="/icons/x.svg" alt="" class="inline-block size-6 dark:invert" />
+                </button>
+            {/if}
+            <input
+                type="text"
+                name={searchMode}
+                class="w-full"
+                placeholder={searchPlaceholders[searchMode]}
+                onfocus={() => {
+                    searchFocus = true;
+                }}
+                onblur={() => {
+                    searchFocus = false;
+                }}
+                bind:value={search}
+            />
+            <button type="submit" class="min-w-max">
+                <span class="align-middle">Search</span>
+                <img src="/icons/search.svg" alt="" class="inline-block size-6 dark:invert" />
+            </button>
+        </label>
+
+        <!-- Dropdown -->
+        {#if search && (search != params.get(searchMode) || searchFocus)}
+            <div class="flex-col divide-y">
+                {@render dropdownSearchButton("all", ["Search trees in", ""])}
+                {@render dropdownSearchButton("species", ["Search", "tree species"])}
+                {@render dropdownSearchButton("location", ["Search", "place name"])}
+                {@render dropdownSearchButton("user", ["Search username", ""])}
+            </div>
+        {/if}
+    </div>
+
+    {#if searchMode == "all"}
+        <label class="flex divide-x rounded border *:p-2">
+            <span class="min-w-40">Species</span>
+            <input type="text" name="species" placeholder="Species name" class="w-full" />
+        </label>
+    {/if}
+</form>
+
+<!-- Results -->
+<div class="px-edge-m pb-edge-m mx-auto max-w-2xl *:not-last:mb-6">
+    {@render displayAllResults()}
+</div>
