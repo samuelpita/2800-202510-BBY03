@@ -1,9 +1,9 @@
 import { fail, redirect } from "@sveltejs/kit";
 import type { Actions, PageServerLoad } from "./$types";
 import { getEmptyFields, objectifyFormData } from "$lib";
-import { findUserByEmail, insertUser } from "$lib/server/db";
+import { findUserEmail, insertUser } from "$lib/server/db/colUsers";
 import { createAuthCookies, getHashedPassword } from "$lib/server/authentication";
-import { endConnection } from "$lib/server/mongo";
+import { endConnection } from "$lib/server/db/mongo";
 
 export const load: PageServerLoad = async ({ cookies }) => {
     const sessionId = cookies.get("sessionid");
@@ -29,7 +29,7 @@ export const actions: Actions = {
         };
 
         // Check for a duplicate email address.
-        const possibleDuplicate = await findUserByEmail(email)
+        const possibleDuplicate = await findUserEmail(email)
             .then((doc) => {
                 if (doc) return true;
                 else return false;
@@ -55,7 +55,7 @@ export const actions: Actions = {
 
         const hashPassword = getHashedPassword(password);
 
-        return await insertUser({ email, username, password: hashPassword })
+        return await insertUser(email, hashPassword, username)
             .then((user) => {
                 console.log("Added user to database. Setting up cookies.");
                 createAuthCookies(cookies, user.insertedId.toString());

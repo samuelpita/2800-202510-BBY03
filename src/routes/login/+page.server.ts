@@ -1,6 +1,6 @@
 import { createAuthCookies, passwordMatchesHash } from "$lib/server/authentication";
-import { findUserByEmail } from "$lib/server/db";
-import { endConnection } from "$lib/server/mongo";
+import { findUserEmail } from "$lib/server/db/colUsers";
+import { endConnection } from "$lib/server/db/mongo";
 import { getEmptyFields, objectifyFormData } from "$lib";
 import { fail, redirect } from "@sveltejs/kit";
 import type { Actions, PageServerLoad } from "./$types";
@@ -30,7 +30,7 @@ export const actions: Actions = {
         if (!email || !password) return fail(400, { email, missing: getEmptyFields(form) });
 
         // Begin handling authentication
-        return await findUserByEmail(email)
+        return await findUserEmail(email)
             .then((user) => {
                 // Returns an error if the user doesn't exist.
                 if (!user) return fail(400, { email, incorrect: true });
