@@ -5,8 +5,13 @@
     import { derived } from 'svelte/store';
 
 
-    let dWideNav = $state(true); // open by default
-    const currentPath = derived(page, ($page) => $page.url.pathname);
+    function divStyle() {
+        return dWideNav ? "w-56" : "w-ico";
+    }
+
+    function sidebarButtonStyle() {
+        return dWideNav ? "rotate-180" : "rotate-0";
+    }
 </script>
 
 {#snippet navLink(icon: typeof Menu, href: string, name: string)}
@@ -23,10 +28,19 @@
 
 {/snippet}
 
-<!-- Desktop Sidebar Only -->
-<div class="bg-light-2 dark:bg-dark-2 box-content p-4 hidden md:block transition-all duration-300 ease-in-out"
-     class:w-56={dWideNav}
-     class:w-16={!dWideNav}>
+<div class="bg-light-2 dark:bg-dark-2 box-content p-4">
+    <div class="overflow-x-hidden transition-all *:not-last:mb-8 {divStyle()}">
+        <button
+            onclick={() => {
+                dWideNav = !dWideNav;
+            }}
+        >
+            <img
+                src="/icons/chevron-right.svg"
+                alt=""
+                class="{sidebarButtonStyle()} size-ico transition-all dark:invert"
+            />
+        </button>
 
     <div class="overflow-x-hidden transition-all *:not-last:mb-6">
         <div class="group nav-link-item mb-6">

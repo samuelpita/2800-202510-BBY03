@@ -1,6 +1,6 @@
 import { stringStartsWithAny } from "$lib";
-import { findUserById } from "$lib/server/db";
-import { endConnection } from "$lib/server/mongo";
+import { findUserId } from "$lib/server/db/colUsers";
+import { endConnection } from "$lib/server/db/mongo";
 import type { Handle } from "@sveltejs/kit";
 
 export const handle: Handle = async ({ event, resolve }) => {
@@ -13,7 +13,7 @@ export const handle: Handle = async ({ event, resolve }) => {
     const userId = event.cookies.get("userid");
 
     if (sessionId && userId) {
-        await findUserById(userId)
+        await findUserId(userId)
             .then((user) => {
                 if (user)
                     event.locals.user = {
