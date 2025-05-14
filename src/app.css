@@ -53,27 +53,27 @@ body {
 }
 
 h1 {
-    @apply font-serif text-6xl text-black dark:text-white;
-}
-
-h2 {
-    @apply font-serif text-5xl text-black dark:text-white;
-}
-
-h3 {
     @apply font-serif text-4xl text-black dark:text-white;
 }
 
-h4 {
+h2 {
     @apply font-serif text-3xl text-black dark:text-white;
 }
 
-h5 {
+h3 {
     @apply font-serif text-2xl text-black dark:text-white;
 }
 
-h6 {
+h4 {
     @apply font-serif text-xl text-black dark:text-white;
+}
+
+h5 {
+    @apply font-serif text-lg text-black dark:text-white;
+}
+
+h6 {
+    @apply font-serif text-black dark:text-white;
 }
 
 a {
@@ -94,4 +94,38 @@ label {
 
 p {
     @apply text-black dark:text-white;
+}
+
+/* Markdown Article Variables */
+
+article h1 {
+    @apply mt-8 mb-4 border-b pb-2 font-serif text-4xl text-black dark:text-white;
+}
+
+article h2 {
+    @apply mt-8 mb-4 border-b pb-2 font-serif text-3xl text-black dark:text-white;
+}
+
+article h3 {
+    @apply mt-8 mb-4 font-serif text-2xl text-black dark:text-white;
+}
+
+article h4 {
+    @apply mt-8 mb-4 font-serif text-xl text-black dark:text-white;
+}
+
+article h5 {
+    @apply mt-8 mb-4 font-serif text-lg text-black dark:text-white;
+}
+
+article h6 {
+    @apply mt-8 mb-4 font-serif text-black dark:text-white;
+}
+
+article ul {
+    @apply ml-10;
+}
+
+article li {
+    @apply mb-1 list-disc text-black dark:text-white;
 }

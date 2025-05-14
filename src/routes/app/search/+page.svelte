@@ -78,63 +78,6 @@
     {/if}
 {/snippet}
 
-<!-- 
-{#snippet dropdownSearchButton(input: string, option: SearchOption)}
-    <button
-        type="submit"
-        onclick={() => {
-            searchMode = option;
-        }}
-    >
-        {input} as {option}
-    </button>
-{/snippet}
-
-<form class="mx-auto max-w-xl">
-    <div class="*:flex">
-        <label class="justify-between divide-x border *:p-2">
-            {#if ["location", "species", "user"].includes(searchMode)}
-                <button
-                    type="button"
-                    onclick={() => {
-                        searchMode = "all";
-                    }}
-                    class="flex grow items-center gap-2"
-                >
-                    <span>{searchMode}</span>
-                    <img
-                        src="https://dummyimage.com/64x64/000/fff"
-                        alt="Close button"
-                        class="size-4"
-                    />
-                </button>
-            {/if}
-            <input
-                type="text"
-                name={searchMode}
-                bind:value={search}
-                placeholder="Search here"
-                class="w-full"
-            />
-            <button type="submit">Search</button>
-        </label>
-        {#if search}
-            <div class="flex-col divide-y border-x border-b *:p-2">
-                {@render dropdownSearchButton(search, "location")}
-                {@render dropdownSearchButton(search, "species")}
-                {@render dropdownSearchButton(search, "user")}
-            </div>
-        {/if}
-    </div>
-
-    <div class="*:flex">
-        <label>
-            <span></span>
-            <input type="text" name="species" />
-        </label>
-    </div>
-</form> -->
-
 <form class="p-edge-m mx-auto max-w-2xl *:not-last:mb-4">
     <div class="divide-y rounded border *:flex *:*:p-2">
         <!-- Search Bar -->
