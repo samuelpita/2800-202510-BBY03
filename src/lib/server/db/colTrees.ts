@@ -23,19 +23,9 @@ export function getTreeSpeciesCollection() {
 
 //#region TreeSpecies CRUD
 
-export function findTreeSpeciesId(id: ObjectId | string, toStringId = false) {
+export function findTreeSpeciesId(id: ObjectId | string) {
     return getTreeSpeciesCollection().then((treeSpecies) => {
-        return treeSpecies.findOne({ _id: ensureId(id) }).then((doc) => {
-            if (doc) {
-                if (toStringId)
-                    return {
-                        ...doc,
-                        _id: doc._id.toString(),
-                    };
-
-                return doc;
-            }
-        });
+        return treeSpecies.findOne({ _id: ensureId(id) });
     });
 }
 
@@ -86,19 +76,9 @@ export function searchTreeSpeciesIdArray(text: string, options?: { limit?: numbe
 
 //#region Tree CRUD
 
-export function findTreeId(id: ObjectId | string, toStringId = false) {
+export function findTreeId(id: ObjectId | string) {
     return getTreesCollection().then((trees) => {
-        return trees.findOne({ _id: ensureId(id) }).then((doc) => {
-            if (doc) {
-                if (toStringId)
-                    return {
-                        ...doc,
-                        _id: doc._id.toString(),
-                    };
-
-                return doc;
-            }
-        });
+        return trees.findOne({ _id: ensureId(id) });
     });
 }
 

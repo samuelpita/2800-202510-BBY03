@@ -1,19 +1,19 @@
 import { findTreeSpeciesGuide } from "$lib/server/db/colGuides";
 import { error } from "@sveltejs/kit";
-import type { PageServerLoad } from "./$types";
 import { findTreeSpeciesId } from "$lib/server/db/colTrees";
 import { findUserId } from "$lib/server/db/colUsers";
-import { compileMarkdown } from "$lib";
+import { compileMarkdown, stringifyObjectIds } from "$lib";
+import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ params }) => {
     const { id } = params;
 
-    const speciesInfo = await findTreeSpeciesId(id, true).then((doc) => {
-        if (doc) return doc;
+    const speciesInfo = await findTreeSpeciesId(id).then((doc) => {
+        if (doc) return stringifyObjectIds(doc);
         error(404);
     });
 
-    const guide = await findTreeSpeciesGuide(id, true)
+    const guide = await findTreeSpeciesGuide(id)
         .then((possibleDoc) => {
             if (possibleDoc) return possibleDoc;
             error(404);
@@ -26,7 +26,7 @@ export const load: PageServerLoad = async ({ params }) => {
                 });
 
             return {
-                ...doc,
+                ...stringifyObjectIds(doc),
                 content,
             };
         });
