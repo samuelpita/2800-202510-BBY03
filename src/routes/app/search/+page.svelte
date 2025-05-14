@@ -1,195 +1,56 @@
 <script lang="ts">
-    import { page } from "$app/state";
-    import type { PageData } from "./$types";
-
-    type SearchOption = "all" | "location" | "species" | "user";
-
-    const searchPlaceholders = {
-        all: "Search here",
-        location: "Search location",
-        species: "Search species name",
-        user: "Search username",
-    };
-
-    let search = $state("");
-    let searchFocus = $state(false);
-    let searchMode: SearchOption = $state("all");
-
-    let params = $derived(page.url.searchParams);
-
-    let { data }: { data: PageData } = $props();
+  export let data;
+  let location = data.queryLocation;
+  let species = data.querySpecies;
 </script>
 
-{#snippet dropdownSearchButton(option: SearchOption, message: [string, string])}
+<form method="GET" class="max-w-2xl mx-auto mt-8 mb-10 px-4">
+  <div class="flex flex-col md:flex-row items-center gap-3 w-full">
+    <input
+      type="text"
+      name="location"
+      bind:value={location}
+      placeholder="📍 Search by address..."
+      class="flex-1 pl-4 pr-4 py-3 rounded-full bg-white border border-gray-200 shadow focus:ring-2 focus:ring-green-400 focus:outline-none placeholder-gray-400 text-sm transition"
+    />
+    <input
+      type="text"
+      name="species"
+      bind:value={species}
+      placeholder="🌳 Search by species..."
+      class="flex-1 pl-4 pr-4 py-3 rounded-full bg-white border border-gray-200 shadow focus:ring-2 focus:ring-green-400 focus:outline-none placeholder-gray-400 text-sm transition"
+    />
     <button
-        type="submit"
-        onclick={() => {
-            searchMode = option;
-        }}
+      type="submit"
+      class="px-6 py-3 rounded-full bg-green-500 hover:bg-green-600 text-white font-medium shadow-md transition duration-200"
     >
-        {message[0]} "{search}" {message[1]}
+      Search
     </button>
-{/snippet}
-
-{#snippet locationResultCard(href: string, heading: string, body: string)}
-    <a {href} class="*:capitalize">
-        <h4>{heading}</h4>
-        <p>{body}</p>
-    </a>
-{/snippet}
-
-{#snippet treeResultCard(id: string, heading: string, body: string, distance_m: number | string)}
-    <a href="/app/tree/{id}">
-        <div class="flex items-center">
-            <img src="/icons/tree.svg" alt="" class="mr-2 size-8 dark:invert" />
-            <div class="w-full *:capitalize">
-                <h5>{heading}</h5>
-                <p>{body}</p>
-            </div>
-            <p class="min-w-max">{distance_m} m</p>
-        </div>
-    </a>
-{/snippet}
-
-{#snippet displayAllResults()}
-    {#if data.treesResultArray}
-        {#each data.treesResultArray as { locationResult, treeResults }}
-            <div class="divide-y rounded border *:block *:p-2">
-                {@render locationResultCard(
-                    "/",
-                    locationResult.properties.name,
-                    `${locationResult.properties.address.state}, ${locationResult.properties.address.country}`,
-                )}
-
-                {#each treeResults as treeResult}
-                    {@render treeResultCard(
-                        treeResult._id,
-                        treeResult.commonName,
-                        treeResult.scientificName,
-                        treeResult.distance ? Math.round(treeResult.distance) : "",
-                    )}
-                {/each}
-
-                {#if treeResults.length == 0}
-                    <p>No trees to show in this area.</p>
-                {/if}
-            </div>
-        {/each}
-    {/if}
-{/snippet}
-
-<!-- 
-{#snippet dropdownSearchButton(input: string, option: SearchOption)}
-    <button
-        type="submit"
-        onclick={() => {
-            searchMode = option;
-        }}
-    >
-        {input} as {option}
-    </button>
-{/snippet}
-
-<form class="mx-auto max-w-xl">
-    <div class="*:flex">
-        <label class="justify-between divide-x border *:p-2">
-            {#if ["location", "species", "user"].includes(searchMode)}
-                <button
-                    type="button"
-                    onclick={() => {
-                        searchMode = "all";
-                    }}
-                    class="flex grow items-center gap-2"
-                >
-                    <span>{searchMode}</span>
-                    <img
-                        src="https://dummyimage.com/64x64/000/fff"
-                        alt="Close button"
-                        class="size-4"
-                    />
-                </button>
-            {/if}
-            <input
-                type="text"
-                name={searchMode}
-                bind:value={search}
-                placeholder="Search here"
-                class="w-full"
-            />
-            <button type="submit">Search</button>
-        </label>
-        {#if search}
-            <div class="flex-col divide-y border-x border-b *:p-2">
-                {@render dropdownSearchButton(search, "location")}
-                {@render dropdownSearchButton(search, "species")}
-                {@render dropdownSearchButton(search, "user")}
-            </div>
-        {/if}
-    </div>
-
-    <div class="*:flex">
-        <label>
-            <span></span>
-            <input type="text" name="species" />
-        </label>
-    </div>
-</form> -->
-
-<form class="p-edge-m mx-auto max-w-2xl *:not-last:mb-4">
-    <div class="divide-y rounded border *:flex *:*:p-2">
-        <!-- Search Bar -->
-        <label class="divide-x">
-            {#if ["location", "species", "user"].includes(searchMode)}
-                <button
-                    type="button"
-                    class="min-w-max"
-                    onclick={() => {
-                        searchMode = "all";
-                    }}
-                >
-                    <span class="align-middle capitalize">{searchMode}</span>
-                    <img src="/icons/x.svg" alt="" class="inline-block size-6 dark:invert" />
-                </button>
-            {/if}
-            <input
-                type="text"
-                name={searchMode}
-                class="w-full"
-                placeholder={searchPlaceholders[searchMode]}
-                onfocus={() => {
-                    searchFocus = true;
-                }}
-                onblur={() => {
-                    searchFocus = false;
-                }}
-                bind:value={search}
-            />
-            <button type="submit" class="min-w-max">
-                <span class="align-middle">Search</span>
-                <img src="/icons/search.svg" alt="" class="inline-block size-6 dark:invert" />
-            </button>
-        </label>
-
-        <!-- Dropdown -->
-        {#if search && (search != params.get(searchMode) || searchFocus)}
-            <div class="flex-col divide-y">
-                {@render dropdownSearchButton("all", ["Search trees in", ""])}
-                {@render dropdownSearchButton("species", ["Search", "tree species"])}
-                {@render dropdownSearchButton("location", ["Search", "place name"])}
-                {@render dropdownSearchButton("user", ["Search username", ""])}
-            </div>
-        {/if}
-    </div>
-
-    {#if searchMode == "all"}
-        <label class="flex divide-x rounded border *:p-2">
-            <span class="min-w-40">Species</span>
-            <input type="text" name="species" placeholder="Species name" class="w-full" />
-        </label>
-    {/if}
+  </div>
 </form>
 
-<!-- Results -->
-<div class="px-edge-m pb-edge-m mx-auto max-w-2xl *:not-last:mb-6">
-    {@render displayAllResults()}
+
+
+{#if data.trees.length === 0}
+    <p class="text-center text-gray-500 mt-12 text-lg">No trees found.</p>
+{:else}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
+        {#each data.trees as tree}
+            <div class="bg-white rounded-2xl shadow-md hover:shadow-lg transition duration-200 p-4 text-center">
+    {#if tree.imgUrl}
+        <img
+            src={tree.imgUrl}
+            alt={`Image of ${tree.speciesName}`}
+            class="w-full h-36 object-cover rounded-xl mb-4"
+        />
+    {/if}
+    <h3 class="text-sm font-medium text-gray-800 mb-1">🌳{tree.speciesName}</h3>
+    <p class="text-sm text-gray-600">📍 {tree.location}</p>
+    <p class="text-sm text-gray-500 mt-1">🌱 Planted: 
+        {tree.datePlanted ? new Date(tree.datePlanted).toLocaleDateString() : "Unknown"}
+    </p>
 </div>
+
+        {/each}
+    </div>
+{/if}

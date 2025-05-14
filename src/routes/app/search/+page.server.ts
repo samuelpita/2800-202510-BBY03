@@ -1,21 +1,43 @@
-import { searchLocation, searchTreesNearPoint, searchTreeSpecies, searchUser } from "$lib/search";
-import type { PageServerLoad } from "./$types";
+import { getTreesCollection, getTreeSpeciesCollection } from "$lib/server/db/colTrees";
+import type { TreeDocument } from "$lib/server/db/types";
 
-export const load: PageServerLoad = async ({ url }) => {
-    const all = url.searchParams.get("all")?.trim();
-    const location = url.searchParams.get("location")?.trim();
-    const species = url.searchParams.get("species")?.trim();
-    const user = url.searchParams.get("user")?.trim();
+export async function load({ url }) {
+  const locationQuery = url.searchParams.get("location")?.toLowerCase().trim() ?? "";
+  const speciesQuery = url.searchParams.get("species")?.toLowerCase().trim() ?? "";
 
-    if (all)
-        return {
-            treesResultArray: await searchTreesNearPoint(all, {
-                speciesSearch: species,
-                limit: 10,
-            }),
-        };
-    else if (location) return { locationResultArray: await searchLocation(location) };
-    else if (species)
-        return { treeSpeciesResultArray: await searchTreeSpecies(species, { limit: 10 }) };
-    else if (user) return { userResultArray: await searchUser(user, { limit: 10 }) };
-};
+  const treesCol = await getTreesCollection();
+  const speciesCol = await getTreeSpeciesCollection();
+
+  const speciesList = await speciesCol.find().toArray();
+
+  const speciesMap = new Map(speciesList.map((s) => [s._id.toString(), s.commonName]));
+
+  const matchingSpeciesIds = speciesQuery
+    ? speciesList
+        .filter((s) => s.commonName.toLowerCase().includes(speciesQuery))
+        .map((s) => s._id.toString())
+    : [];
+
+  const query: any = {};
+
+  if (locationQuery) {
+    query.location = { $regex: locationQuery, $options: "i" };
+  }
+
+  if (matchingSpeciesIds.length > 0) {
+    query.speciesId = { $in: matchingSpeciesIds };
+  }
+
+  const trees = await treesCol.find(query).toArray();
+
+  const enriched = trees.map((tree) => ({
+    ...tree,
+    speciesName: speciesMap.get(tree.speciesId.toString()) ?? "Unknown"
+  }));
+
+  return {
+    trees: enriched,
+    queryLocation: locationQuery,
+    querySpecies: speciesQuery
+  };
+}

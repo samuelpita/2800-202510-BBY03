@@ -9,7 +9,7 @@ import type { BBox, Point, Position } from "geojson";
 
 export function getTreesCollection() {
     return startConnection().then((client) => {
-        return client.db(MONGODB_DATABASE).collection<TreeDocument>("trees");
+        return client.db(MONGODB_DATABASE).collection<TreeDocument>("newTrees");
     });
 }
 
@@ -82,11 +82,15 @@ export function findTreeId(id: ObjectId | string) {
     });
 }
 
-export function insertTree(treeSpeciesId: ObjectId | string, location: Point, datePlanted: Date) {
+export function insertTree(speciesId: ObjectId | string, coordinates: {lat: number, long: number}, location: string, datePlanted: Date) {
     return getTreesCollection().then((trees) => {
         return trees.insertOne({
-            treeSpeciesId: ensureId(treeSpeciesId),
+            speciesId: ensureId(speciesId),
             location,
+            coordinates: {
+                lat: coordinates.lat, // Replace with actual latitude
+                long: coordinates.long, // Replace with actual longitude
+            },
             datePlanted,
             dateCreated: new Date(),
         });
