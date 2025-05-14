@@ -1,4 +1,4 @@
-// place files you want to import through the `$lib` alias in this folder.
+import { compile } from "mdsvex";
 
 // String helper functions //
 
@@ -43,4 +43,13 @@ export function getEmptyFields(form: FormData, includeOnly?: string[]) {
 
 export function isDarkMode() {
     return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+}
+
+// Markdown helper functions //
+
+export async function compileMarkdown(source: string) {
+    const result = await compile(source);
+
+    if (result) return result;
+    throw new Error("(compileMarkdown) Source did not compile.");
 }

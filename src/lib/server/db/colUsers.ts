@@ -16,9 +16,19 @@ export function getUsersCollection() {
 
 // User CRUD //
 
-export function findUserId(id: ObjectId | string) {
+export function findUserId(id: ObjectId | string, toStringId = false) {
     return getUsersCollection().then((users) => {
-        return users.findOne({ _id: ensureId(id) });
+        return users.findOne({ _id: ensureId(id) }).then((doc) => {
+            if (doc) {
+                if (toStringId)
+                    return {
+                        ...doc,
+                        _id: doc._id.toString(),
+                    };
+
+                return doc;
+            }
+        });
     });
 }
 

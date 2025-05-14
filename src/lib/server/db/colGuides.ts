@@ -22,9 +22,20 @@ export function getTreeSpeciesGuideCollection() {
 
 //#region General Guide CRUD
 
-export function findGuideId(id: ObjectId | string) {
+export function findGuideId(id: ObjectId | string, toStringId = false) {
     return getGuidesCollection().then((guides) => {
-        return guides.findOne({ _id: ensureId(id) });
+        return guides.findOne({ _id: ensureId(id) }).then((doc) => {
+            if (doc) {
+                if (toStringId)
+                    return {
+                        ...doc,
+                        _id: doc._id.toString(),
+                        userId: doc.userId ? doc.userId.toString() : undefined,
+                    };
+
+                return doc;
+            }
+        });
     });
 }
 
@@ -46,9 +57,21 @@ export function insertGuide(title: string, content: string, userId?: ObjectId | 
 
 //#region Tree Species Guide CRUD
 
-export function findTreeSpeciesGuide(treeSpeciesId: ObjectId | string) {
+export function findTreeSpeciesGuide(treeSpeciesId: ObjectId | string, toStringId = false) {
     return getTreeSpeciesGuideCollection().then((treeSpeciesGuides) => {
-        return treeSpeciesGuides.findOne({ treeSpeciesId: ensureId(treeSpeciesId) });
+        return treeSpeciesGuides.findOne({ treeSpeciesId: ensureId(treeSpeciesId) }).then((doc) => {
+            if (doc) {
+                if (toStringId)
+                    return {
+                        ...doc,
+                        _id: doc._id.toString(),
+                        treeSpeciesId: doc._id.toString(),
+                        userId: doc.userId ? doc.userId.toString() : undefined,
+                    };
+
+                return doc;
+            }
+        });
     });
 }
 
