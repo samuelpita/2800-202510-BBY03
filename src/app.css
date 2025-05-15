@@ -17,11 +17,12 @@
     --radius-outer: 0.75rem;
     --radius-inner: 0.25rem;
 
-    --color-accent: oklch(69.6% 0.17 162.48);
-    --color-dark: oklch(21% 0.006 285.885);
-    --color-dark-2: oklch(29% 0.006 286.033);
-    --color-light: oklch(98% 0.016 73.684);
-    --color-light-2: oklch(95.4% 0.038 75.164);
+    --color-dark-accent: #fb7519;
+    --color-dark: #2c211e;
+    --color-dark-2: #4c3028;
+    --color-light-accent: #fa4d1b;
+    --color-light: #f8d8b6;
+    --color-light-2: #fbc78f;
 }
 
 /* Class Variables */
@@ -38,8 +39,12 @@
     @apply text-red-500 dark:text-red-500;
 }
 
+.text-accent {
+    @apply text-light-accent dark:text-dark-accent;
+}
+
 .text-link {
-    @apply text-accent font-sans underline underline-offset-4;
+    @apply text-light-accent dark:text-dark-accent font-sans font-semibold underline underline-offset-4;
 }
 
 /* Element Variables */
