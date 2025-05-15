@@ -53,23 +53,23 @@ body {
 }
 
 h1 {
-    @apply font-serif text-4xl text-black dark:text-white;
+    @apply font-serif text-black dark:text-white;
 }
 
 h2 {
-    @apply font-serif text-3xl text-black dark:text-white;
+    @apply font-serif text-black dark:text-white;
 }
 
 h3 {
-    @apply font-serif text-2xl text-black dark:text-white;
+    @apply font-serif text-black dark:text-white;
 }
 
 h4 {
-    @apply font-serif text-xl text-black dark:text-white;
+    @apply font-serif text-black dark:text-white;
 }
 
 h5 {
-    @apply font-serif text-lg text-black dark:text-white;
+    @apply font-serif text-black dark:text-white;
 }
 
 h6 {

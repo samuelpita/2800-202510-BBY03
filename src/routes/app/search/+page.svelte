@@ -25,6 +25,7 @@
         type="submit"
         onclick={() => {
             searchMode = option;
+            searchFocus = false;
         }}
     >
         {message[0]} "{search}" {message[1]}
@@ -47,6 +48,29 @@
                 <p>{body}</p>
             </div>
             <p class="min-w-max">{distance_m} m</p>
+        </div>
+    </a>
+{/snippet}
+
+{#snippet treeSpeciesResultCard(id: string, commonName: string, scientificName: string)}
+    <a href="/app/tree/species/{id}">
+        <div class="flex items-center">
+            <img src="/icons/tree.svg" alt="" class="mr-2 size-8 dark:invert" />
+            <div class="w-full *:capitalize">
+                <h5>{commonName}</h5>
+                <p>{scientificName}</p>
+            </div>
+        </div>
+    </a>
+{/snippet}
+
+{#snippet userResultCard(id: string, username: string)}
+    <a href="/app/user/{id}">
+        <div class="flex items-center">
+            <img src="/icons/user.svg" alt="" class="mr-2 size-8 dark:invert" />
+            <div class="w-full *:capitalize">
+                <h5>{username}</h5>
+            </div>
         </div>
     </a>
 {/snippet}
@@ -78,6 +102,45 @@
     {/if}
 {/snippet}
 
+{#snippet displayLocationResults()}
+    {#if data.locationResultArray}
+        {#each data.locationResultArray as locationResult}
+            <div class="divide-y rounded border *:block *:p-2">
+                {@render locationResultCard(
+                    "/",
+                    locationResult.properties.name,
+                    `${locationResult.properties.address.state}, ${locationResult.properties.address.country}`,
+                )}
+            </div>
+        {/each}
+    {/if}
+{/snippet}
+
+{#snippet displayTreeSpeciesResults()}
+    {#if data.treeSpeciesResultArray}
+        {#each data.treeSpeciesResultArray as treeResult}
+            <div class="divide-y rounded border *:block *:p-2">
+                {@render treeSpeciesResultCard(
+                    treeResult._id,
+                    treeResult.commonName,
+                    treeResult.scientificName,
+                )}
+            </div>
+        {/each}
+    {/if}
+{/snippet}
+
+{#snippet displayUserResults()}
+    {#if data.userResultArray}
+        {#each data.userResultArray as userResult}
+            <div class="divide-y rounded border *:block *:p-2">
+                {@render userResultCard(userResult._id, userResult.username)}
+            </div>
+        {/each}
+    {/if}
+{/snippet}
+
+<!-- Search -->
 <form class="p-edge-m mx-auto max-w-2xl *:not-last:mb-4">
     <div class="divide-y rounded border *:flex *:*:p-2">
         <!-- Search Bar -->
@@ -90,8 +153,8 @@
                         searchMode = "all";
                     }}
                 >
-                    <span class="align-middle capitalize">{searchMode}</span>
                     <img src="/icons/x.svg" alt="" class="inline-block size-6 dark:invert" />
+                    <span class="align-middle capitalize">{searchMode}</span>
                 </button>
             {/if}
             <input
@@ -101,9 +164,6 @@
                 placeholder={searchPlaceholders[searchMode]}
                 onfocus={() => {
                     searchFocus = true;
-                }}
-                onblur={() => {
-                    searchFocus = false;
                 }}
                 bind:value={search}
             />
@@ -135,4 +195,7 @@
 <!-- Results -->
 <div class="px-edge-m pb-edge-m mx-auto max-w-2xl *:not-last:mb-6">
     {@render displayAllResults()}
+    {@render displayLocationResults()}
+    {@render displayTreeSpeciesResults()}
+    {@render displayUserResults()}
 </div>

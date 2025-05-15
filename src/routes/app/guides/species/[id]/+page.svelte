@@ -7,12 +7,12 @@
         <h1>{data.guide.title}</h1>
         <p class="italic">by {data.author}</p>
         <p class="italic">Posted {data.guide.dateCreated.toDateString()}</p>
-        <!-- {#if data.guide.dateUpdated}
+        {#if data.guide.dateUpdated}
             <p>Updated {data.guide.dateUpdated.toDateString()}</p>
-        {/if} -->
+        {/if}
     </div>
 
-    <a href="/app/species/{data.speciesInfo._id}" class="flex items-center gap-4 rounded border p-4">
+    <a href="/app/tree/species/{data.speciesInfo._id}" class="flex items-center gap-4 rounded border p-4">
         <img src="/icons/tree.svg" alt="" class="size-16 dark:invert" />
         <div>
             <h3 class="capitalize">{data.speciesInfo.commonName.toLowerCase()}</h3>
