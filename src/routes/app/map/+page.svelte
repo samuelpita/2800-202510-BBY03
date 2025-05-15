@@ -1,64 +1,58 @@
 <script lang="ts">
-    import { isDarkMode } from "$lib";
-    import { onMount } from "svelte";
-    import type { PageProps } from "./$types";
-    import type * as Leaflet from "leaflet";
-    import "leaflet-geosearch/dist/geosearch.css";
-    import "leaflet/dist/leaflet.css";
+  import { onMount } from 'svelte';
+  import 'leaflet/dist/leaflet.css';
+  import 'leaflet.markercluster/dist/MarkerCluster.css';
+  import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 
-    let { data }: PageProps = $props();
+  export let data: {
+    trees: Array<{
+      _id: string;
+      location: { coordinates: [number, number] };
+      datePlanted?: string | null;
+      treeSpeciesId?: string;
+    }>;
+  };
 
-    let L;
+  let mapDiv: HTMLDivElement;
 
-    let mapDiv: HTMLDivElement;
-    let map: Leaflet.Map;
+  onMount(async () => {
+    // 1) Dynamically import Leaflet core
+    const L = (await import('leaflet')).default;
+    // 2) Dynamically import the cluster plugin (it augments L)
+    await import('leaflet.markercluster');
 
-    /*
-        SSR (Server-Side Rendering) is a thing in SvelteKit. You can
-        search that up.
-        
-        Leaflet, by design, works with the DOM, and because of that, you
-        can't put all of the Leaflet-related functions outside of onMount.
-        This is because Svelte compiles all of the .svelte stuff server-side,
-        and the server doesn't have access to the client's browser,
-        where all of the DOM magic reside in.
+    // 3) Initialize map centered on Vancouver
+    const map = L.map(mapDiv).setView([49.25, -123.1], 12);
 
-        If you ever have any issues, please contact me. ChatGPT may help, but
-        I don't think it has a grasp on this framework in particular. Gemini
-        does though.
+    // 4) Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
 
-        Finally, I will componentize Leaflet's functionalities, so it looks
-        cleaner overall, and we can reuse the map in other pages where
-        needed. For now though, they will stay here in onMount().
+    // 5) Create a MarkerClusterGroup
+    const clusters = L.markerClusterGroup();
 
-        Good luck
-        -Sam
-    */
+    // 6) Add each tree as a marker
+    for (const tree of data.trees) {
+      const [lng, lat] = tree.location.coordinates;
+      const marker = L.marker([lat, lng]).bindPopup(`
+        <div style="min-width:150px">
+          <strong>ID:</strong> ${tree._id}<br/>
+          <strong>Species:</strong> ${tree.treeSpeciesId ?? 'N/A'}<br/>
+          <strong>Planted:</strong> ${tree.datePlanted ?? 'Unknown'}
+        </div>
+      `);
+      clusters.addLayer(marker);
+    }
 
-    onMount(async () => {
-        if (window !== undefined) {
-            const leaflet = await import("leaflet");
-            L = leaflet.default;
-
-            map = L.map(mapDiv).setView([49.2487, -122.9875], 13);
-
-            if (isDarkMode()) {
-                L.tileLayer(
-                    "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png",
-                    {
-                        maxZoom: 20,
-                        attribution:
-                            '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
-                    },
-                ).addTo(map);
-            } else {
-                L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-                    attribution:
-                        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                }).addTo(map);
-            }
-        }
-    });
+    // 7) Add the cluster group to the map
+    map.addLayer(clusters);
+  });
 </script>
 
-<div bind:this={mapDiv} class="size-full overflow-hidden"></div>
+<!-- 
+  8) Make sure the container has height in your CSS.
+     Here I use Tailwind's full-screen height;
+     you can also use a fixed h-[600px] if you prefer.
+-->
+<div bind:this={mapDiv} class="w-full h-screen rounded-xl shadow-lg overflow-hidden"></div>

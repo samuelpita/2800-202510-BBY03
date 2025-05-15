@@ -21,6 +21,7 @@
         "@types/bcrypt": "^5.0.2",
         "@types/geojson": "^7946.0.16",
         "@types/leaflet": "^1.9.17",
+        "@types/leaflet.markercluster": "^1.5.5",
         "mdsvex": "^0.12.3",
         "prettier": "^3.4.2",
         "prettier-plugin-svelte": "^3.3.3",
@@ -33,8 +34,10 @@
     },
     "dependencies": {
         "bcrypt": "^5.1.1",
+        "dotenv": "^16.5.0",
         "leaflet": "^1.9.4",
         "leaflet-geosearch": "^4.2.0",
+        "leaflet.markercluster": "^1.5.3",
         "mongodb": "^6.16.0"
     }
 }
