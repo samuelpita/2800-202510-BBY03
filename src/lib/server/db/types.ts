@@ -50,18 +50,14 @@ export type AdoptionAchievementDocument = AchievementDocument & {
 
 export type TreeAge = "seed" | "seedling" | "sapling" | "mature";
 
+
 export type TreeDocument = {
-    speciesId: ObjectId;
-    location: string;
-    coordinates: {
-        lat: number;
-        long: number;
-    };
+    treeSpeciesId: ObjectId;
+    location: Point;
     datePlanted: Date;
     dateCreated: Date;
-    imgUrl?: string;
-    stats?: TreeStats;
 };
+
 
 export type TreeSpeciesDocument = {
     commonName: string;
