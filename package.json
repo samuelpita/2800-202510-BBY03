@@ -12,7 +12,7 @@
         "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
         "format": "prettier --write .",
         "lint": "prettier --check .",
-        "start": "node --env-file=.env build"
+        "start": "node build"
     },
     "devDependencies": {
         "@sveltejs/adapter-node": "^5.2.12",
