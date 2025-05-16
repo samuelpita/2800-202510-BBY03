@@ -46,9 +46,15 @@ export function insertGuide(title: string, content: string, userId?: ObjectId | 
 
 //#region Tree Species Guide CRUD
 
-export function findTreeSpeciesGuide(treeSpeciesId: ObjectId | string) {
-    return getTreeSpeciesGuideCollection().then((treeSpeciesGuides) => {
-        return treeSpeciesGuides.findOne({ treeSpeciesId: ensureId(treeSpeciesId) });
+export function findTreeSpeciesGuideId(id: ObjectId | string) {
+    return getTreeSpeciesGuideCollection().then((guides) => {
+        return guides.findOne({ _id: ensureId(id) });
+    });
+}
+
+export function findTreeSpeciesGuides(treeSpeciesId: ObjectId | string) {
+    return getGuidesCollection().then((guides) => {
+        return guides.find({ treeSpeciesId: ensureId(treeSpeciesId) });
     });
 }
 

@@ -60,12 +60,6 @@ export function getEmptyFields(form: FormData, includeOnly?: string[]) {
     return missing;
 }
 
-// Window helper functions //
-
-export function isDarkMode() {
-    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-}
-
 // Markdown helper functions //
 
 export async function compileMarkdown(source: string) {
