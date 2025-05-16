@@ -1,4 +1,25 @@
-// place files you want to import through the `$lib` alias in this folder.
+import { compile } from "mdsvex";
+import { type WithId, type Document, ObjectId } from "mongodb";
+
+// Helper types //
+
+export type DistReplaceType<TProp, TOld, TNew> = TProp extends TOld ? TNew : TProp;
+
+export type ReplaceType<T, OldType, NewType> = {
+    [P in keyof T]: DistReplaceType<T[P], OldType, NewType>;
+};
+
+// ObjectId helper functions //
+
+export function stringifyObjectIds<TDocument extends Document>(doc: WithId<TDocument>) {
+    for (const key of Object.keys(doc)) {
+        if (doc[key] instanceof ObjectId) {
+            doc[key] = doc[key].toString();
+        }
+    }
+
+    return doc as ReplaceType<WithId<TDocument>, ObjectId, string>;
+}
 
 // String helper functions //
 
@@ -39,8 +60,11 @@ export function getEmptyFields(form: FormData, includeOnly?: string[]) {
     return missing;
 }
 
-// Window helper functions //
+// Markdown helper functions //
 
-export function isDarkMode() {
-    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+export async function compileMarkdown(source: string) {
+    const result = await compile(source);
+
+    if (result) return result;
+    throw new Error("(compileMarkdown) Source did not compile.");
 }

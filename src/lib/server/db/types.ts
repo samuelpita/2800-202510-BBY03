@@ -8,6 +8,13 @@ interface AchievementDocument {
     dateCompleted: Date | null;
 }
 
+interface GuideFormat {
+    title: string;
+    content: string;
+    dateCreated: Date;
+    dateUpdated?: Date;
+}
+
 //#region Actions & Reminders
 
 export type ActionDetails = {
@@ -46,10 +53,22 @@ export type AdoptionAchievementDocument = AchievementDocument & {
 
 //#endregion
 
+//#region Guides
+
+export type GuideDocument = GuideFormat & {
+    userId?: ObjectId;
+};
+
+export type TreeSpeciesGuideDocument = GuideFormat & {
+    treeSpeciesId: ObjectId;
+    userId?: ObjectId;
+};
+
+//#endregion
+
 //#region Trees
 
-export type TreeAge = "seed" | "seedling" | "sapling" | "mature";
-
+export type TreeStage = "seed" | "seedling" | "sapling" | "mature" | "snag";
 
 export type TreeDocument = {
     treeSpeciesId: ObjectId;
@@ -58,17 +77,18 @@ export type TreeDocument = {
     dateCreated: Date;
 };
 
-
 export type TreeSpeciesDocument = {
     commonName: string;
     scientificName: string;
 };
 
-export type TreeStats = {
-    dateUpdated: Date;
-    age?: TreeAge;
+export type TreeLogsDocument = {
+    treeId: ObjectId;
+    stage?: TreeStage;
     diameter?: number;
     height?: number;
+    health?: string;
+    dateCreated: Date;
 };
 
 //#endregion
