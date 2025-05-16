@@ -36,6 +36,7 @@
         "leaflet": "^1.9.4",
         "leaflet-geosearch": "^4.2.0",
         "lucide-svelte": "^0.507.0",
-        "mongodb": "^6.16.0"
+        "mongodb": "^6.16.0",
+        "svelte-select": "^5.8.3"
     }
 }

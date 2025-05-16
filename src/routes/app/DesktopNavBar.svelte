@@ -4,6 +4,7 @@
     import { page } from '$app/stores';
     import { derived } from 'svelte/store';
 
+    let dWideNav = false; 
 
     function divStyle() {
         return dWideNav ? "w-56" : "w-ico";
@@ -68,4 +69,5 @@
             {@render navLink(Book, "/app/guides", "Guides")}
         </nav>
     </div>
+</div>
 </div>
