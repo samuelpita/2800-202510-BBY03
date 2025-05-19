@@ -77,3 +77,8 @@ export function deleteAuthCookies(cookies: Cookies) {
     cookies.delete("sessionid", cookieOptionsDelete);
     cookies.delete("userid", cookieOptionsDelete);
 }
+
+
+export function getUserSession(cookies: Cookies) {
+    return cookies.get("sessionid");
+}
