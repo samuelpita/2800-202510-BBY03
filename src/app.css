@@ -135,3 +135,10 @@ article li {
     @apply mb-1 list-disc text-black dark:text-white;
 }
 
+/* Navbar styles */
+.nav-item-box {
+	@apply px-3 py-3 rounded-xl hover:bg-dark transition-all flex items-center;
+}
+.collapsed {
+	@apply justify-center;
+}

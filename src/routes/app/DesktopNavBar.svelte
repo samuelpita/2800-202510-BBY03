@@ -19,7 +19,7 @@
     {@const Icon = icon}
     <a {href} class="group nav-link-item w-full">
         <div class="nav-item-box" class:collapsed={!dWideNav}>
-            <Icon class="icon" />
+            <Icon class="icon " />
             {#if dWideNav}
                 <span class="text-xxs">{name}</span>
             {/if}
