@@ -1,5 +1,6 @@
 <script lang="ts">
-	export let data;
+	export let data: any;
+
 	let radius = data.radius ?? "";
 	let selectedSpeciesId = data.speciesId ?? "";
 	let speciesSearch = "";
@@ -12,7 +13,7 @@
 	let loadingFact = false;
 
 	// Dynamically update the dropdown
-	$: filteredSpecies = speciesList.filter((s) =>
+	$: filteredSpecies = speciesList.filter((s: { _id: string; commonName: string }) =>
 		s.commonName.toLowerCase().includes(speciesSearch.toLowerCase())
 	);
 
