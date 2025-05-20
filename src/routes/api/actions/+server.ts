@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         const treeLogsCollection = db.collection('treeLogs');
         
         const treeLogDocument = {
-            treeId: new ObjectId(treeId),
+            treeId: ObjectId.createFromHexString(treeId),
             userId: locals.user._id,
             type,
             details: { body: details || '' },
