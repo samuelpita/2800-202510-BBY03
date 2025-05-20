@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import { insertAdoption } from '$lib/server/db/colAdoptions';
+import { adoptTree } from '$lib/server/db/colAdoptions';
 import type { RequestEvent } from '@sveltejs/kit';
 
 export const POST = async ({ request, cookies }: RequestEvent) => {
@@ -16,13 +16,9 @@ export const POST = async ({ request, cookies }: RequestEvent) => {
       return json({ success: false, message: 'Tree ID is required' }, { status: 400 });
     }
     
-    const result = await insertAdoption(userId, treeId);
+    const result = await adoptTree(userId, treeId);
     
-    return json({ 
-      success: true, 
-      message: 'Tree adopted successfully!',
-      adoptionId: result.insertedId.toString()
-    });
+    return json(result);
     
   } catch (error) {
     console.error('Error adopting tree:', error);

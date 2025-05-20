@@ -1,19 +1,8 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
+  import type { Tree } from '$lib/server/db/types';
   
   let { data } = $props();
-  
-  type Tree = {
-    _id?: string;
-    speciesInfo?: {
-      commonName: string;
-      scientificName: string;
-    };
-    location?: {
-      coordinates: [number, number];
-    };
-    datePlanted?: string | Date;
-  };
   
   const tree = $derived(data.tree as Tree);
   

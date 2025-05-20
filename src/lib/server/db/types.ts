@@ -60,6 +60,39 @@ export type TreeSpeciesDocument = {
     scientificName: string;
 };
 
+export type AdoptedTree = {
+    adoption: {
+        _id: string;
+        userId: string;
+        treeId: string;
+        active: boolean;
+        dateAdopted: string | Date;
+    };
+    tree: {
+        _id: string;
+        treeSpeciesId: string;
+        location?: Point;
+        datePlanted?: Date;
+        dateCreated?: Date;
+        speciesInfo?: {
+            commonName: string;
+            scientificName: string;
+        };
+    };
+};
+
+export type Tree = {
+    _id?: string;
+    speciesInfo?: {
+      commonName: string;
+      scientificName: string;
+    };
+    location?: {
+      coordinates: [number, number];
+    };
+    datePlanted?: string | Date;
+};
+
 //#endregion
 
 //#region Users
