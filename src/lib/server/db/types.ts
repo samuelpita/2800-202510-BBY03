@@ -84,6 +84,7 @@ export type TreeSpeciesDocument = {
 
 export type TreeLogsDocument = {
     treeId: ObjectId;
+    userId: ObjectId;
     stage?: TreeStage;
     diameter?: number;
     height?: number;
