@@ -19,11 +19,12 @@
     --radius-outer: 0.75rem;
     --radius-inner: 0.25rem;
 
-    --color-accent: oklch(69.6% 0.17 162.48);
-    --color-dark: oklch(21% 0.006 285.885);
-    --color-dark-2: oklch(29% 0.006 286.033);
-    --color-light: oklch(98% 0.016 73.684);
-    --color-light-2: oklch(95.4% 0.038 75.164);
+    --color-dark-accent: #fb7519;
+    --color-dark: #2c211e;
+    --color-dark-2: #4c3028;
+    --color-light-accent: #fa4d1b;
+    --color-light: #f8d8b6;
+    --color-light-2: #fbc78f;
 }
 
 /* Class Variables */
@@ -32,42 +33,54 @@
     @apply flex-col md:odd:flex-row md:even:flex-row-reverse;
 }
 
+.p-search {
+    @apply px-edge-m pt-edge-m md:px-edge-d md:pt-edge-d pb-4;
+}
+
 .text-error {
     @apply text-red-500 dark:text-red-500;
 }
 
+.text-accent {
+    @apply text-light-accent dark:text-dark-accent;
+}
+
 .text-link {
-    @apply text-accent font-sans underline underline-offset-4;
+    @apply text-light-accent dark:text-dark-accent font-sans font-semibold underline underline-offset-4;
 }
 
 /* Element Variables */
+
+* {
+    @apply border-black dark:border-white;
+}
 
 body {
     @apply bg-orange-300 dark:bg-orange-800;
 }
 
 h1 {
-    @apply font-serif text-6xl text-black dark:text-white;
+    @apply font-serif text-black dark:text-white;
 }
 
 h2 {
-    @apply font-serif text-5xl text-black dark:text-white;
+    @apply font-serif text-black dark:text-white;
 }
 
 h3 {
-    @apply font-serif text-4xl text-black dark:text-white;
+    @apply font-serif text-black dark:text-white;
 }
 
 h4 {
-    @apply font-serif text-3xl text-black dark:text-white;
+    @apply font-serif text-black dark:text-white;
 }
 
 h5 {
-    @apply font-serif text-2xl text-black dark:text-white;
+    @apply font-serif text-black dark:text-white;
 }
 
 h6 {
-    @apply font-serif text-xl text-black dark:text-white;
+    @apply font-serif text-black dark:text-white;
 }
 
 a {
@@ -79,7 +92,7 @@ button {
 }
 
 input {
-    @apply font-sans text-black dark:text-white;
+    @apply font-sans;
 }
 
 label {
@@ -88,4 +101,46 @@ label {
 
 p {
     @apply text-black dark:text-white;
+}
+
+/* Markdown Article Variables */
+
+article h1 {
+    @apply mt-8 mb-4 border-b pb-2 font-serif text-4xl text-black dark:text-white;
+}
+
+article h2 {
+    @apply mt-8 mb-4 border-b pb-2 font-serif text-3xl text-black dark:text-white;
+}
+
+article h3 {
+    @apply mt-8 mb-4 font-serif text-2xl text-black dark:text-white;
+}
+
+article h4 {
+    @apply mt-8 mb-4 font-serif text-xl text-black dark:text-white;
+}
+
+article h5 {
+    @apply mt-8 mb-4 font-serif text-lg text-black dark:text-white;
+}
+
+article h6 {
+    @apply mt-8 mb-4 font-serif text-black dark:text-white;
+}
+
+article ul {
+    @apply ml-10;
+}
+
+article li {
+    @apply mb-1 list-disc text-black dark:text-white;
+}
+
+/* Navbar styles */
+.nav-item-box {
+	@apply px-3 py-3 rounded-xl hover:bg-dark transition-all flex items-center;
+}
+.collapsed {
+	@apply justify-center;
 }

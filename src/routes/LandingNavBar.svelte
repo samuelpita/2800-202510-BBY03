@@ -1,12 +1,22 @@
-<div class="h-nav mask-b-from-90% bg-linear-to-t bg-light-2 dark:from-orange-800 dark:to-orange-600 fixed top-0 flex w-full items-center justify-between">
+<script lang="ts">
+    import Weather from '$lib/components/Weather.svelte';
+</script>
+
+<div class="h-nav bg-light-2 dark:bg-dark-2 fixed top-0 flex w-full items-center justify-between px-4">
     <a href="/" class="flex">
-        <img src="/lorax-logo.png" alt="" class="w-[72px] h-[48px] mb-4" />
+        <img src="/logo.png" alt="" class="size-nav" /> 
+        <Weather />
     </a>
-    <nav class="flex gap-4 mb-4 mr-4 text-xl">
-        <a href="/app" class="text-link"><p class="font-['Amaranth']">app</p></a>
-        <a href="/login" class="text-link"><p class="font-['Amaranth']">login</p></a>
-        <a href="/register" class="text-link"><p class="font-['Amaranth']">register</p></a>
+
+   
+
+    <nav class="flex gap-4">
+        <a href="/app" class="btn-orange">App</a>
+        <a href="/login" class="btn-orange">Login</a>
+        <a href="/register" class="btn-orange">Register</a>
     </nav>
+
 </div>
 
+<!-- Spacer to prevent overlap -->
 <div class="h-nav"></div>

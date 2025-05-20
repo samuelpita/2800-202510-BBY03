@@ -1,14 +1,9 @@
 <script lang="ts">
-    import { isDarkMode } from "$lib";
+    // import { isDarkMode } from "$lib";
     import { onMount } from "svelte";
-    import type { PageProps } from "./$types";
     import type * as Leaflet from "leaflet";
     import "leaflet-geosearch/dist/geosearch.css";
     import "leaflet/dist/leaflet.css";
-
-    let { data }: PageProps = $props();
-
-    let L;
 
     let mapDiv: HTMLDivElement;
     let map: Leaflet.Map;
@@ -37,12 +32,12 @@
 
     onMount(async () => {
         if (window !== undefined) {
-            const leaflet = await import("leaflet");
-            L = leaflet.default;
+            const L = (await import("leaflet")).default;
+            const GeoSearch = await import("leaflet-geosearch");
 
             map = L.map(mapDiv).setView([49.2487, -122.9875], 13);
 
-            if (isDarkMode()) {
+            if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
                 L.tileLayer(
                     "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png",
                     {
@@ -57,8 +52,16 @@
                         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                 }).addTo(map);
             }
+
+            const search = GeoSearch.GeoSearchControl({
+                provider: new GeoSearch.OpenStreetMapProvider(),
+            });
+
+            map.addControl(search);
         }
     });
 </script>
 
 <div bind:this={mapDiv} class="size-full overflow-hidden"></div>
+
+<p>what the fuck</p>
