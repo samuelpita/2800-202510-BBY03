@@ -1,21 +1,14 @@
 import { redirect } from "@sveltejs/kit";
-import type { PageServerLoad, Actions } from "./$types";
 import { findAdoptionsUserId } from "$lib/server/db/colAdoptions";
 import { findTreeId, findTreeSpeciesId } from "$lib/server/db/colTrees";
-import { findUserId } from "$lib/server/db/colUsers";
+import type { RequestEvent } from "@sveltejs/kit";
 
-export const load: PageServerLoad = async ({ cookies, locals }) => {
-    const sessionId = cookies.get("sessionid");
+export const load = async ({ cookies }: RequestEvent) => {
     const userId = cookies.get("userid");
-
-    if (!(sessionId && userId)) throw redirect(303, "/login");
-
-    const userData = await findUserId(userId);
-
-    const enhancedUser = {
-        ...locals.user,
-        profilePicture: userData?.profilePicture || ''
-    };
+    
+    if (!userId) {
+        throw redirect(303, "/login");
+    }
     
     const adoptions = await findAdoptionsUserId(userId);
     
@@ -56,17 +49,6 @@ export const load: PageServerLoad = async ({ cookies, locals }) => {
     const validAdoptedTrees = adoptedTrees.filter(item => item !== null);
     
     return {
-        user: enhancedUser,
         adoptedTrees: validAdoptedTrees
     };
-};
-
-export const actions: Actions = {
-    logout: async ({ cookies }) => {
-        cookies.delete('sessionid', { path: '/' });
-        cookies.delete('userid', { path: '/' });
-
-        redirect(303, '/login'); 
-    }
-};
-
+}; 

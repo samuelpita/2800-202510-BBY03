@@ -82,14 +82,50 @@ export type TreeSpeciesDocument = {
     scientificName: string;
 };
 
+export type AdoptedTree = {
+    adoption: {
+        _id: string;
+        userId: string;
+        treeId: string;
+        active: boolean;
+        dateAdopted: string | Date;
+    };
+    tree: {
+        _id: string;
+        treeSpeciesId: string;
+        location?: Point;
+        datePlanted?: Date;
+        dateCreated?: Date;
+        speciesInfo?: {
+            commonName: string;
+            scientificName: string;
+        };
+    };
+};
+
+export type Tree = {
+    _id?: string;
+    speciesInfo?: {
+      commonName: string;
+      scientificName: string;
+    };
+    location?: {
+      coordinates: [number, number];
+    };
+    datePlanted?: string | Date;
+};
+
 export type TreeLogsDocument = {
     treeId: ObjectId;
     userId: ObjectId;
+    type: string;
+    details?: ActionDetails;
     stage?: TreeStage;
     diameter?: number;
     height?: number;
     health?: string;
     dateCreated: Date;
+    dateCompleted?: Date | null;
 };
 
 //#endregion
@@ -101,6 +137,7 @@ export type UserDocument = {
     password: string;
     username: string;
     dateJoined: Date;
+    profilePicture?: string;
 };
 
 export type UserAchievementDocument = AchievementDocument & {
