@@ -8,9 +8,6 @@
     <div
         class="p-edge-d bg-light-2 dark:bg-dark-2 *:not-last:mb-edge-d rounded-outer mx-auto max-w-xl"
     >
-        <a href="/" class="inline-block size-12">
-            <img src="https://dummyimage.com/48x48/000/fff" alt="" />
-        </a>
 
         <h1 class="text-4xl">Log in to <span class="text-accent font-bold">Lorax</span></h1>
 
@@ -44,5 +41,6 @@
         </form>
 
         <a href="/register" class="text-link">Create a new account</a>
+        <a href="/" class="text-link float-right">Home</a>
     </div>
 </main>

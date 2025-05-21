@@ -9,11 +9,11 @@
     <!-- Header Section -->
     <header>
         <div class="mb-edge-d px-edge-d mx-auto max-w-4xl *:not-last:mb-2">
-            <h1 class="text-4xl font-bold flex items-center gap-2">
-                <img src="/logo.png" alt="Lorax Logo" class="size-nav" />
-                <span>Lorax</span>
+            <h1 class="text-4xl font-bold flex items-center gap-2 ml-10">
+                <img src="/logo.png" alt="Lorax Logo" class="w-[128px] h-[128px]" />
+                <span class="text-5xl">Lorax</span>
             </h1>
-            <h5 class="text-lg text-neutral-700">designed for tree lovers, and those who speak for the trees</h5>
+            <h5 class="text-lg text-neutral-700 text-center"><i>Designed for tree lovers, and those who speak for the trees</i></h5>
         </div>
 
         <img src="/header1.jpg" alt="Lorax forest header" class="block w-full md:hidden" />
@@ -22,7 +22,7 @@
 
     <!-- Mission Section -->
     <section class="px-edge-d mx-auto max-w-4xl text-center">
-        <h3 class="text-3xl font-semibold mb-2">Mission</h3>
+        <h3 class="text-3xl font-semibold mb-2">Our Mission</h3>
         <p class="text-lg text-neutral-800">
             Lorax empowers individuals to connect with and care for urban trees. Our mission is to promote environmental awareness, encourage community participation, and make it easy for everyone to adopt and protect green life in their neighborhood.
         </p>

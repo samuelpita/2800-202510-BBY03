@@ -56,39 +56,39 @@
 }
 
 body {
-    @apply bg-orange-300 dark:bg-orange-800;
+    @apply bg-[#F8D8B6] dark:bg-[#2C211E];
 }
 
 h1 {
-    @apply font-serif text-black dark:text-white;
+    @apply font-serif text-[#461F08] dark:text-[#F8D8B6];
 }
 
 h2 {
-    @apply font-serif text-black dark:text-white;
+    @apply font-serif text-[#461F08] dark:text-[#F8D8B6];
 }
 
 h3 {
-    @apply font-serif text-black dark:text-white;
+    @apply font-serif text-[#461F08] dark:text-[#F8D8B6];
 }
 
 h4 {
-    @apply font-serif text-black dark:text-white;
+    @apply font-serif text-[#461F08] dark:text-[#F8D8B6];
 }
 
 h5 {
-    @apply font-serif text-black dark:text-white;
+    @apply font-serif text-[#461F08] dark:text-[#F8D8B6];
 }
 
 h6 {
-    @apply font-serif text-black dark:text-white;
+    @apply font-serif text-[#461F08] dark:text-[#F8D8B6];
 }
 
 a {
-    @apply text-black dark:text-white;
+    @apply text-[#461F08] dark:text-[#F8D8B6];
 }
 
 button {
-    @apply cursor-pointer text-black dark:text-white;
+    @apply cursor-pointer text-[#461F08] dark:text-[#F8D8B6];
 }
 
 input {
@@ -96,37 +96,37 @@ input {
 }
 
 label {
-    @apply font-sans text-black dark:text-white;
+    @apply font-sans text-[#461F08] dark:text-[#F8D8B6];
 }
 
 p {
-    @apply text-black dark:text-white;
+    @apply text-[#461F08] dark:text-[#F8D8B6];
 }
 
 /* Markdown Article Variables */
 
 article h1 {
-    @apply mt-8 mb-4 border-b pb-2 font-serif text-4xl text-black dark:text-white;
+    @apply mt-8 mb-4 border-b pb-2 font-serif text-4xl text-[#461F08] dark:text-[#F8D8B6];
 }
 
 article h2 {
-    @apply mt-8 mb-4 border-b pb-2 font-serif text-3xl text-black dark:text-white;
+    @apply mt-8 mb-4 border-b pb-2 font-serif text-3xl text-[#461F08] dark:text-[#F8D8B6];
 }
 
 article h3 {
-    @apply mt-8 mb-4 font-serif text-2xl text-black dark:text-white;
+    @apply mt-8 mb-4 font-serif text-2xl text-[#461F08] dark:text-[#F8D8B6];
 }
 
 article h4 {
-    @apply mt-8 mb-4 font-serif text-xl text-black dark:text-white;
+    @apply mt-8 mb-4 font-serif text-xl text-[#461F08] dark:text-[#F8D8B6];
 }
 
 article h5 {
-    @apply mt-8 mb-4 font-serif text-lg text-black dark:text-white;
+    @apply mt-8 mb-4 font-serif text-lg text-[#461F08] dark:text-[#F8D8B6];
 }
 
 article h6 {
-    @apply mt-8 mb-4 font-serif text-black dark:text-white;
+    @apply mt-8 mb-4 font-serif text-[#461F08] dark:text-[#F8D8B6];
 }
 
 article ul {
@@ -134,7 +134,7 @@ article ul {
 }
 
 article li {
-    @apply mb-1 list-disc text-black dark:text-white;
+    @apply mb-1 list-disc text-[#461F08] dark:text-[#F8D8B6];
 }
 
 /* Navbar styles */
