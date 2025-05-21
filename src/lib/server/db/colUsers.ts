@@ -38,3 +38,12 @@ export function insertUser(email: string, password: string, username: string) {
         });
     });
 }
+
+export function updateUser(userId: ObjectId | string, updateData: Partial<Omit<UserDocument, '_id'>>) {
+    return getUsersCollection().then((users) => {
+        return users.updateOne(
+            { _id: ensureId(userId) },
+            { $set: updateData }
+        );
+    });
+}
