@@ -8,7 +8,7 @@
     <section>
         <h1 class="text-4xl font-bold mb-2">Welcome to Lorax</h1>
         <p class="mb-4">
-            Lorax is your neighborhood companion for preserving urban nature. Adopt a local tree, track its health, and make a lasting impact on your community’s ecosystem.
+            Lorax is your neighborhood companion for preserving urban nature. Adopt a local tree, track its health, and make a lasting impact on your community's ecosystem.
         </p>
         <Sprout class="w-16 h-16 text-green-600" />
     </section>
@@ -32,7 +32,7 @@
     <section>
         <h3 class="text-2xl font-semibold mt-10 mb-2">📊 Track Growth</h3>
         <p class="mb-4">
-            Monitor your tree’s development over time with photos, notes, and a growth timeline. Watch your impact grow, one leaf at a time.
+            Monitor your tree's development over time with photos, notes, and a growth timeline. Watch your impact grow, one leaf at a time.
         </p>
         <BarChart3 class="w-16 h-16 text-yellow-500" />
     </section>
