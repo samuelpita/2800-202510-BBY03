@@ -12,7 +12,7 @@
             <img src="https://dummyimage.com/48x48/000/fff" alt="" />
         </a>
 
-        <h1>Log in to Lorax</h1>
+        <h1 class="text-4xl">Log in to <span class="text-accent font-bold">Lorax</span></h1>
 
         {#if form?.incorrect}
             <p class="text-error">Email address or password is incorrect!</p>

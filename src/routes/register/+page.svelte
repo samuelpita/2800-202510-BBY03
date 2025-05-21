@@ -12,7 +12,7 @@
             <img src="https://dummyimage.com/48x48/000/fff" alt="" />
         </a>
 
-        <h1>Sign up for Lorax</h1>
+        <h1 class="text-4xl">Sign up for <span class="text-accent font-bold">Lorax</span></h1>
 
         {#if form?.serverIssue}
             <p class="text-error">
