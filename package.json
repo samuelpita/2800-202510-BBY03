@@ -11,7 +11,9 @@
         "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
         "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
         "format": "prettier --write .",
-        "lint": "prettier --check ."
+        "lint": "prettier --check .",  
+        "export:species": "node scripts/export-species.js"
+
     },
     "devDependencies": {
         "@sveltejs/adapter-cloudflare": "^7.0.0",
@@ -40,4 +42,6 @@
         "leaflet.markercluster": "^1.5.3",
         "mongodb": "^6.16.0"
     }
+    
+
 }

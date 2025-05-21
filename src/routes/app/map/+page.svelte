@@ -9,50 +9,57 @@
       _id: string;
       location: { coordinates: [number, number] };
       datePlanted?: string | null;
-      treeSpeciesId?: string;
+      treeSpeciesId: string;
+      commonName: string;
+      scientificName: string;
     }>;
   };
 
   let mapDiv: HTMLDivElement;
 
   onMount(async () => {
-    // 1) Dynamically import Leaflet core
     const L = (await import('leaflet')).default;
-    // 2) Dynamically import the cluster plugin (it augments L)
     await import('leaflet.markercluster');
 
-    // 3) Initialize map centered on Vancouver
     const map = L.map(mapDiv).setView([49.25, -123.1], 12);
-
-    // 4) Add OpenStreetMap tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
     }).addTo(map);
 
-    // 5) Create a MarkerClusterGroup
     const clusters = L.markerClusterGroup();
 
-    // 6) Add each tree as a marker
-    for (const tree of data.trees) {
+    data.trees.forEach(tree => {
       const [lng, lat] = tree.location.coordinates;
-      const marker = L.marker([lat, lng]).bindPopup(`
-        <div style="min-width:150px">
-          <strong>ID:</strong> ${tree._id}<br/>
-          <strong>Species:</strong> ${tree.treeSpeciesId ?? 'N/A'}<br/>
-          <strong>Planted:</strong> ${tree.datePlanted ?? 'Unknown'}
+      const popup = `
+        <div style="min-width:200px">
+          <strong>${tree.commonName}</strong><br/>
+          <em>${tree.scientificName}</em><br/>
+          <small>ID: ${tree._id}</small><br/>
+          <small>Planted: ${tree.datePlanted ?? 'Unknown'}</small><br/>
+          <button class="adopt-btn" style="
+            margin-top:6px;
+            padding:4px 8px;
+            background:#28a745;
+            color:#fff;
+            border:none;
+            border-radius:3px;
+            cursor:pointer;
+          ">Adopt</button>
         </div>
-      `);
-      clusters.addLayer(marker);
-    }
+      `;
+      clusters.addLayer(L.marker([lat, lng]).bindPopup(popup));
+    });
 
-    // 7) Add the cluster group to the map
     map.addLayer(clusters);
+
+    // hook up adopt button alerts
+    map.on('popupopen', (e: any) => {
+      const btn = e.popup.getElement().querySelector('.adopt-btn');
+      btn?.addEventListener('click', () => {
+        alert(`🌱 You have adopted a ${btn.closest('div').querySelector('strong').textContent}!`);
+      });
+    });
   });
 </script>
 
-<!-- 
-  8) Make sure the container has height in your CSS.
-     Here I use Tailwind's full-screen height;
-     you can also use a fixed h-[600px] if you prefer.
--->
 <div bind:this={mapDiv} class="w-full h-screen rounded-xl shadow-lg overflow-hidden"></div>
