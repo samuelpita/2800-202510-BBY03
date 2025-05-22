@@ -34,7 +34,6 @@
     },
     "dependencies": {
         "bcrypt": "^5.1.1",
-        "dotenv": "^16.5.0",
         "leaflet": "^1.9.4",
         "leaflet-geosearch": "^4.2.0",
         "lucide-svelte": "^0.507.0",
