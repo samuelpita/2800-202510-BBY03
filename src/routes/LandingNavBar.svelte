@@ -1,14 +1,7 @@
-<script lang="ts">
-    import Weather from '$lib/components/Weather.svelte';
-</script>
-
 <div class="h-nav bg-light-2 dark:bg-dark-2 fixed top-0 flex w-full items-center justify-between px-4">
     <a href="/" class="flex">
         <img src="/logo.png" alt="" class="size-nav" /> 
-        <Weather />
     </a>
-
-   
 
     <nav class="flex gap-4">
         <a href="/app" class="btn-orange">App</a>

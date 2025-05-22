@@ -9,7 +9,7 @@
     </a>
 {/snippet}
 
-<div class="h-nav bg-light-2 dark:bg-dark-2 w-full px-edge-m">
+<div class="h-nav bg-light-2 dark:bg-dark-2 w-full px-edge-m border-t">
     <nav class="size-full flex justify-around items-center">
         {@render navLink(User, "/app/account", "Account")}
         {@render navLink(Home, "/app", "Home")}

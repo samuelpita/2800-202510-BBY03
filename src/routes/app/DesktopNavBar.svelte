@@ -32,7 +32,7 @@
     </a>
 {/snippet}
 
-<div class="bg-light-2 dark:bg-dark-2 box-content p-4">
+<div class="bg-light-2 dark:bg-dark-2 box-content p-4 border-r">
     <div class="overflow-x-hidden transition-all *:not-last:mb-8 {divStyle()}">
         <button
             onclick={() => {
