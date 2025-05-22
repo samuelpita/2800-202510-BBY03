@@ -1,158 +1,265 @@
 <script lang="ts">
-	export let data: any;
+    import { fade } from "svelte/transition";
+    import { page } from "$app/state";
+    import { positionToString } from "$lib/geolocation";
+    import { TreePine, MapPin, User, TriangleAlert } from "lucide-svelte";
+    import { onMount } from "svelte";
+    import type { PageData } from "./$types";
 
-	let radius = data.radius ?? "";
-	let selectedSpeciesId = data.speciesId ?? "";
-	let speciesSearch = "";
-	let showDropdown = false;
+    type SearchOption = "all" | "location" | "species" | "user";
 
-	let speciesList = data.speciesList ?? [];
-	let filteredSpecies = speciesList;
+    const searchPlaceholders = {
+        all: "Search here",
+        guides: "Search guides",
+        location: "Search location",
+        species: "Search species name",
+        user: "Search username",
+    };
 
-	let ecoFact = "";
-	let loadingFact = false;
+    let userCoordinates: string = $state("#0_0");
+    let userCoordinatesValid = $state(false);
 
-	// Dynamically update the dropdown
-	$: filteredSpecies = speciesList.filter((s: { _id: string; commonName: string }) =>
-		s.commonName.toLowerCase().includes(speciesSearch.toLowerCase())
-	);
+    let search = $state("");
+    let searchFocus = $state(false);
+    let searchMode: SearchOption = $state("all");
 
-	// 🧠 AI fact generator
-	async function getEcoFact() {
-		if (!selectedSpeciesId) {
-			ecoFact = "🌱 Please select a species first to get a relevant fact!";
-			return;
-		}
+    let params = $derived(page.url.searchParams);
 
-		loadingFact = true;
-		ecoFact = "";
+    let { data }: { data: PageData } = $props();
 
-		try {
-			const res = await fetch(`/app/search?speciesId=${selectedSpeciesId}`);
-			const json = await res.json();
-			ecoFact = json.fact;
-		} catch (err) {
-			ecoFact = "Couldn't load a fact right now. 🌧️ Try again later.";
-			console.error(err);
-		} finally {
-			loadingFact = false;
-		}
-	}
+    onMount(() => {
+        if (!navigator.geolocation) return;
 
-	function selectSpecies(s: { _id: string; commonName: string }) {
-		selectedSpeciesId = s._id;
-		speciesSearch = s.commonName;
-		showDropdown = false;
-	}
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                let long = pos.coords.longitude;
+                let lat = pos.coords.latitude;
 
-	function getLocationAndSearch() {
-		navigator.geolocation.getCurrentPosition((pos) => {
-			const lat = pos.coords.latitude;
-			const long = pos.coords.longitude;
-
-			const url = new URL(window.location.href);
-			url.searchParams.set("lat", lat.toString());
-			url.searchParams.set("long", long.toString());
-
-			if (radius) url.searchParams.set("radius", radius.toString());
-			if (selectedSpeciesId) url.searchParams.set("speciesId", selectedSpeciesId);
-
-			window.location.href = url.toString();
-		});
-	}
+                userCoordinates = positionToString([long, lat]);
+                userCoordinatesValid = true;
+            },
+            (error) => console.error(error),
+        );
+    });
 </script>
 
-<!-- Search Form -->
-<form method="GET" class="mx-auto mt-10 mb-6 max-w-3xl space-y-4 px-4">
-	<div class="flex flex-col md:flex-row gap-4">
-		<!-- Radius input -->
-		<input
-			type="number"
-			name="radius"
-			bind:value={radius}
-			min="1"
-			placeholder="📏 Distance Radius (Km)"
-			class="flex-1 rounded-xl border border-gray-300 px-4 py-2 shadow-sm"
-		/>
+{#snippet dropdownSearchButton(option: SearchOption, message: [string, string])}
+    <button
+        type="submit"
+        onclick={() => {
+            searchMode = option;
+        }}
+    >
+        {message[0]} "{search}" {message[1]}
+    </button>
+{/snippet}
 
-		<!-- Species searchable dropdown -->
-		<div class="relative flex-1">
-			<input
-				type="text"
-				placeholder="🌿 Search species..."
-				bind:value={speciesSearch}
-				on:focus={() => (showDropdown = true)}
-				on:input={() => (showDropdown = true)}
-				class="w-full rounded-xl border border-gray-300 px-4 py-2 shadow-sm"
-			/>
+{#snippet locationResultCard(href: string, heading: string, body: string)}
+    <a {href} class="*:capitalize">
+        <div class="flex items-center">
+            <MapPin class="mr-2 size-8" />
+            <div class="w-full">
+                <h3 class="text-3xl">{heading}</h3>
+                <p>{body}</p>
+            </div>
+        </div>
+    </a>
+{/snippet}
 
-			{#if showDropdown && filteredSpecies.length > 0}
-				<ul class="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md max-h-48 overflow-y-auto shadow-md">
-					{#each filteredSpecies as s}
-						<li>
-							<button
-								type="button"
-								class="w-full text-left px-4 py-2 cursor-pointer hover:bg-green-100 focus:outline-none"
-								on:click={() => selectSpecies(s)}
-							>
-								{s.commonName}
-							</button>
-						</li>
-					{/each}
-				</ul>
-			{/if}
-		</div>
-	</div>
+{#snippet treeResultCard(
+    id: string,
+    heading: string,
+    body: string,
+    address?: string,
+    distance_m?: number | string,
+)}
+    <a href="/app/tree/{id}">
+        <div class="flex items-center">
+            <TreePine class="mr-2 size-8" />
+            <div class="w-full *:capitalize">
+                <h5 class="text-xl">{heading}</h5>
+                <p>{body}</p>
+                {#if address}
+                    <p>{address}</p>
+                {/if}
+            </div>
+            {#if distance_m != undefined}
+                <p class="min-w-max">{distance_m} m</p>
+            {/if}
+        </div>
+    </a>
+{/snippet}
 
-	<!-- Hidden input for speciesId -->
-	<input type="hidden" name="speciesId" value={selectedSpeciesId} />
+{#snippet treeSpeciesResultCard(id: string, commonName: string, scientificName: string)}
+    <a href="/app/tree/species/{id}">
+        <div class="flex items-center">
+            <TreePine class="mr-2 size-8" />
+            <div class="w-full *:capitalize">
+                <h5>{commonName}</h5>
+                <p class="italic">{scientificName}</p>
+            </div>
+        </div>
+    </a>
+{/snippet}
 
-	<!-- Search button -->
-	<button
-		type="button"
-		on:click={getLocationAndSearch}
-		class="rounded-xl bg-green-600 text-white px-6 py-2 hover:bg-green-700 mt-2"
-	>
-		Search Nearby
-	</button>
+{#snippet userResultCard(id: string, username: string)}
+    <a href="/app/user/{id}">
+        <div class="flex items-center">
+            <User class="mr-2 size-8" />
+            <div class="w-full">
+                <h5>{username}</h5>
+            </div>
+        </div>
+    </a>
+{/snippet}
+
+{#snippet displayTreesNearbyResults()}
+    {#if data.treesNearPositionResults}
+        <div class="divide-y rounded border *:block *:p-2">
+            {#each data.treesNearPositionResults as treeResult}
+                {@render treeResultCard(
+                    treeResult._id,
+                    treeResult.commonName,
+                    treeResult.scientificName,
+                    treeResult.address,
+                    treeResult.distance ? Math.round(treeResult.distance) : "",
+                )}
+            {/each}
+
+            {#if data.treesNearPositionResults.length == 0}
+                <span>No adoptable trees exist near you.</span>
+            {/if}
+        </div>
+    {/if}
+{/snippet}
+
+{#snippet displayTreesInLocationResults()}
+    {#if data.treesInLocationResults}
+        {#each data.treesInLocationResults as { locationResult, treeResults }}
+            <div class="divide-y rounded border *:block *:p-2">
+                {@render locationResultCard(
+                    "/",
+                    locationResult.properties.name,
+                    `${locationResult.properties.address.state}, ${locationResult.properties.address.country}`,
+                )}
+
+                {#each treeResults as treeResult}
+                    {@render treeResultCard(
+                        treeResult._id,
+                        treeResult.commonName,
+                        treeResult.scientificName,
+                        treeResult.address,
+                    )}
+                {/each}
+
+                {#if treeResults.length == 0}
+                    <p>No trees to show in this area.</p>
+                {/if}
+            </div>
+        {/each}
+    {/if}
+{/snippet}
+
+{#snippet displayTreeSpeciesResults()}
+    {#if data.treeSpeciesResultArray}
+        <div class="divide-y rounded border *:block *:p-2">
+            {#each data.treeSpeciesResultArray as { _id, commonName, scientificName }}
+                {@render treeSpeciesResultCard(_id, commonName, scientificName)}
+            {/each}
+        </div>
+    {/if}
+{/snippet}
+
+{#snippet displayUserResults()}
+    {#if data.userResultArray}
+        <div class="divide-y rounded border *:block *:p-2">
+            {#each data.userResultArray as { _id, username }}
+                {@render userResultCard(_id, username)}
+            {/each}
+        </div>
+    {/if}
+{/snippet}
+
+{#snippet coordinatesError()}
+    {#if !userCoordinatesValid}
+        <div transition:fade class="flex items-center gap-3 rounded bg-red-500 p-3">
+            <TriangleAlert class="min-h-6 min-w-6" color="white" />
+            <p>Nearby search is unavailable; trying to find your location</p>
+        </div>
+    {/if}
+{/snippet}
+
+<form class="p-edge-m mx-auto max-w-2xl *:not-last:mb-4">
+    {@render coordinatesError()}
+
+    <div class="divide-y rounded border *:flex *:*:p-2">
+        <!-- Search Bar -->
+        <label class="divide-x">
+            {#if ["guides", "location", "species", "user"].includes(searchMode)}
+                <button
+                    type="button"
+                    class="min-w-max"
+                    onclick={() => {
+                        searchMode = "all";
+                    }}
+                >
+                    <span class="align-middle capitalize">{searchMode}</span>
+                    <img src="/icons/x.svg" alt="" class="inline-block size-6 dark:invert" />
+                </button>
+            {/if}
+            <input
+                type="text"
+                name={searchMode}
+                class="w-full"
+                placeholder={searchPlaceholders[searchMode]}
+                onfocus={() => {
+                    searchFocus = true;
+                }}
+                onblur={() => {
+                    searchFocus = false;
+                }}
+                bind:value={search}
+            />
+            <button type="submit" class="min-w-max">
+                <span class="align-middle">Search</span>
+                <img src="/icons/search.svg" alt="" class="inline-block size-6 dark:invert" />
+            </button>
+        </label>
+
+        <!-- Dropdown -->
+        {#if search && (search != params.get(searchMode) || searchFocus)}
+            <div class="flex-col divide-y">
+                {@render dropdownSearchButton("all", ["Search nearest", ""])}
+                {@render dropdownSearchButton("location", ["Search trees in", ""])}
+                {@render dropdownSearchButton("species", ["Search", "tree species"])}
+                {@render dropdownSearchButton("user", ["Search username", ""])}
+            </div>
+        {/if}
+    </div>
+
+    <div class="divide-y rounded border *:flex *:divide-x *:*:p-2 empty:hidden">
+        {#if searchMode == "all"}
+            <label>
+                <span class="min-w-36">Radius (km)</span>
+                <input type="number" name="radius" min="1" value="20" class="w-full" />
+            </label>
+        {:else if ["location", "guides"].includes(searchMode)}
+            <label>
+                <span class="min-w-36">Species</span>
+                <input type="text" name="species" class="w-full" />
+            </label>
+        {/if}
+    </div>
+
+    {#if searchMode == "all"}
+        <input type="text" name="userCoordinates" value={userCoordinates} class="hidden" />
+    {/if}
 </form>
 
-<!-- 🌟 Eco Fact Button + Output -->
-<div class="mt-6 flex justify-end px-4">
-	<button
-		on:click={getEcoFact}
-		class="rounded-full bg-blue-500 text-white px-4 py-2 shadow hover:bg-blue-600 disabled:opacity-50"
-		disabled={loadingFact}
-	>
-		{loadingFact ? "Loading..." : "✨ Eco Fact"}
-	</button>
-</div>
-
-{#if ecoFact}
-	<div class="mt-4 mx-4 p-4 bg-blue-100 text-blue-900 rounded-lg shadow">
-		🌿 {ecoFact}
-	</div>
-{/if}
-
 <!-- Results -->
-{#if data.searched}
-	{#if data.trees.length === 0}
-		<p class="mt-8 text-center text-gray-500">No trees found matching your criteria.</p>
-	{:else}
-		<div class="mt-6 grid grid-cols-1 gap-5 px-4 md:grid-cols-2 lg:grid-cols-3">
-			{#each data.trees as tree}
-				<div class="rounded-2xl bg-white p-5 shadow-lg ring-1 ring-gray-100 transition-all hover:shadow-xl">
-					<p class="text-lg font-semibold text-green-800 mb-2">🌳 {tree.speciesName}</p>
-					<div class="text-sm text-gray-600 space-y-1">
-						<p><span class="font-medium text-gray-700">📍 Location:</span> {tree.location}</p>
-						<p><span class="font-medium text-gray-700">🗓️ Planted Date:</span> 
-							{tree.datePlanted
-								? new Date(tree.datePlanted).toLocaleDateString()
-								: "Unknown"}
-						</p>
-					</div>
-				</div>
-			{/each}
-		</div>
-	{/if}
-{/if}
+<div class="px-edge-m pb-edge-m mx-auto max-w-2xl *:not-last:mb-6">
+    {@render displayTreesNearbyResults()}
+    {@render displayTreesInLocationResults()}
+    {@render displayTreeSpeciesResults()}
+    {@render displayUserResults()}
+</div>

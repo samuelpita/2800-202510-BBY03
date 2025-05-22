@@ -106,11 +106,11 @@ export type AdoptedTree = {
 export type Tree = {
     _id?: string;
     speciesInfo?: {
-      commonName: string;
-      scientificName: string;
+        commonName: string;
+        scientificName: string;
     };
     location?: {
-      coordinates: [number, number];
+        coordinates: [number, number];
     };
     datePlanted?: string | Date;
 };

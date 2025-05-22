@@ -12,7 +12,7 @@
     --spacing-edge-m: 1.5rem;
 
     --spacing-nav: 4rem;
-    --spacing-ico: 3rem;
+    --spacing-ico: 2rem;
 
     --radius-outer: 0.75rem;
     --radius-inner: 0.25rem;
@@ -136,9 +136,10 @@ article li {
 }
 
 /* Navbar styles */
+
 .nav-item-box {
-	@apply px-3 py-3 rounded-xl hover:bg-dark transition-all flex items-center;
+    @apply hover:bg-dark flex items-center rounded-xl px-3 py-3 transition-all;
 }
 .collapsed {
-	@apply justify-center;
+    @apply justify-center;
 }
