@@ -6,8 +6,8 @@ import {
     type TreeOptionsNearPoint,
 } from "./server/db/colTrees";
 import { getUsersCollection } from "./server/db/colUsers";
-import type { TreeSpeciesDocument, UserDocument } from "./server/db/types";
-import type { Feature, FeatureCollection, Point } from "geojson";
+import type { TreeSpeciesDocument } from "./server/db/types";
+import type { Feature, FeatureCollection, Point, Position } from "geojson";
 import type { Document } from "mongodb";
 
 //#region Location Search - Nominatim API
@@ -45,7 +45,10 @@ export type TreeResult = {
 
 export type TreeSearchResult = { locationResult: LocationResult; treeResults: TreeResult[] }[];
 
-export async function searchTreesNearPoint(locationSearch: string, options?: TreeOptionsNearPoint) {
+export async function searchTreesNearPosition(
+    coordinates: Position,
+    options?: TreeOptionsNearPoint,
+) {
     if (!options) options = {};
     if (!options.projectStage)
         options.projectStage = {
@@ -55,28 +58,19 @@ export async function searchTreesNearPoint(locationSearch: string, options?: Tre
             distance: 1,
         };
 
-    const locationResults = await searchLocation(locationSearch);
-    const searchResults: TreeSearchResult = [];
+    const treeResults: TreeResult[] = [];
+    const trees = await findTreesNearPoint(coordinates, options);
 
-    for (const locationResult of locationResults) {
-        const treeResults: TreeResult[] = [];
-        const trees = await findTreesNearPoint(locationResult.geometry.coordinates, options);
-
-        for (const tree of trees) {
-            treeResults.push({
-                _id: tree._id.toString(),
-                commonName: tree.speciesInfo.commonName.toLowerCase(),
-                scientificName: tree.speciesInfo.scientificName.toLowerCase(),
-                distance: tree.distance,
-            });
-        }
-
-        console.log(treeResults);
-
-        searchResults.push({ locationResult, treeResults });
+    for (const tree of trees) {
+        treeResults.push({
+            _id: tree._id.toString(),
+            commonName: tree.speciesInfo.commonName.toLowerCase(),
+            scientificName: tree.speciesInfo.scientificName.toLowerCase(),
+            distance: tree.distance,
+        });
     }
 
-    return searchResults;
+    return treeResults;
 }
 
 export async function searchTreesInBox(locationSearch: string, options?: TreeOptionsInBox) {
@@ -100,8 +94,8 @@ export async function searchTreesInBox(locationSearch: string, options?: TreeOpt
         for (const tree of trees) {
             treeResults.push({
                 _id: tree._id.toString(),
-                commonName: tree.speciesInfo.commonName,
-                scientificName: tree.speciesInfo.scientificName,
+                commonName: tree.speciesInfo.commonName.toLowerCase(),
+                scientificName: tree.speciesInfo.scientificName.toLowerCase(),
             });
         }
 
