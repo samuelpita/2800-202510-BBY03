@@ -9,17 +9,10 @@ import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ url }) => {
     const all = url.searchParams.get("all")?.trim();
-    const guides = url.searchParams.get("guides")?.trim();
     const location = url.searchParams.get("location")?.trim();
     const species = url.searchParams.get("species")?.trim();
     const user = url.searchParams.get("user")?.trim();
 
-    /*
-        "all" searches trees closest to a point, often being the
-        user's coordinates.
-
-        In this scenario, "all" acts as the species input
-    */
     if (all != undefined) {
         const userCoordinates = url.searchParams.get("userCoordinates") as string;
         const radius = url.searchParams.get("radius") as string;

@@ -66,13 +66,22 @@
     </a>
 {/snippet}
 
-{#snippet treeResultCard(id: string, heading: string, body: string, distance_m?: number | string)}
+{#snippet treeResultCard(
+    id: string,
+    heading: string,
+    body: string,
+    address?: string,
+    distance_m?: number | string,
+)}
     <a href="/app/tree/{id}">
         <div class="flex items-center">
             <TreePine class="mr-2 size-8" />
             <div class="w-full *:capitalize">
                 <h5 class="text-xl">{heading}</h5>
                 <p>{body}</p>
+                {#if address}
+                    <p>{address}</p>
+                {/if}
             </div>
             {#if distance_m != undefined}
                 <p class="min-w-max">{distance_m} m</p>
@@ -112,6 +121,7 @@
                     treeResult._id,
                     treeResult.commonName,
                     treeResult.scientificName,
+                    treeResult.address,
                     treeResult.distance ? Math.round(treeResult.distance) : "",
                 )}
             {/each}
@@ -138,6 +148,7 @@
                         treeResult._id,
                         treeResult.commonName,
                         treeResult.scientificName,
+                        treeResult.address,
                     )}
                 {/each}
 
