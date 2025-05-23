@@ -184,7 +184,7 @@
     {#if !userCoordinatesValid}
         <div transition:fade class="flex items-center gap-3 rounded bg-red-500 p-3">
             <TriangleAlert class="min-h-6 min-w-6" color="white" />
-            <p>Nearby search is unavailable; trying to find your location</p>
+            <span class="text-white">Nearby search is unavailable; trying to find your location</span>
         </div>
     {/if}
 {/snippet}
