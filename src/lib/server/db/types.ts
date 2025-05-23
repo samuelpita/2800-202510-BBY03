@@ -118,11 +118,14 @@ export type Tree = {
 export type TreeLogsDocument = {
     treeId: ObjectId;
     userId: ObjectId;
+    type: string;
+    details?: ActionDetails;
     stage?: TreeStage;
     diameter?: number;
     height?: number;
     health?: string;
     dateCreated: Date;
+    dateCompleted?: Date | null;
 };
 
 //#endregion
@@ -134,6 +137,7 @@ export type UserDocument = {
     password: string;
     username: string;
     dateJoined: Date;
+    profilePicture?: string;
 };
 
 export type UserAchievementDocument = AchievementDocument & {

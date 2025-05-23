@@ -1,5 +1,6 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
+    import type { TreeStage } from '$lib/server/db/types';
     
     interface Tree {
         _id: string;
@@ -12,6 +13,16 @@
         health?: string;
     }
     
+    interface ActivityData {
+        treeId: string | null;
+        type: string;
+        details: string;
+        completed: boolean;
+        completedDate: string;
+        stage?: string;
+        health?: string;
+    }
+    
     let { data } = $props();
     const treeId = $derived(data.url.searchParams.get('treeId'));
     
@@ -19,12 +30,33 @@
     let loading = $state(true);
     let activityType = $state('');
     let details = $state('');
+    let stage = $state('');
+    let health = $state('');
     let completed = $state(true);
     let completedDate = $state(new Date().toISOString().split('T')[0]);
     let completedTime = $state(new Date().toTimeString().slice(0, 5));
     let errorMessage = $state('');
     let successMessage = $state('');
     let isSubmitting = $state(false);
+    
+    // Tree stage options
+    const stageOptions = [
+        { value: 'seed', label: 'Seed' },
+        { value: 'seedling', label: 'Seedling' },
+        { value: 'sapling', label: 'Sapling' },
+        { value: 'mature', label: 'Mature' },
+        { value: 'snag', label: 'Snag (Dead Tree)' }
+    ];
+    
+    // Tree health options
+    const healthOptions = [
+        { value: 'excellent', label: 'Excellent' },
+        { value: 'good', label: 'Good' },
+        { value: 'fair', label: 'Fair' },
+        { value: 'poor', label: 'Poor' },
+        { value: 'critical', label: 'Critical' },
+        { value: 'dead', label: 'Dead' }
+    ];
     
     $effect(() => {
         loadTree();
@@ -37,6 +69,21 @@
                 const response = await fetch(`/api/trees/${treeId}`);
                 if (response.ok) {
                     tree = await response.json();
+                    console.log('Retrieved tree data:', tree);
+                    
+                    if (tree && tree.stage) {
+                        stage = tree.stage;
+                        console.log('Setting initial stage to:', stage);
+                    } else {
+                        stage = 'sapling';
+                    }
+                    
+                    if (tree && tree.health) {
+                        health = tree.health;
+                        console.log('Setting initial health to:', health);
+                    } else {
+                        health = 'good';
+                    }
                 } else {
                     console.error('Failed to fetch tree details');
                     errorMessage = 'Failed to load tree details. Please try again.';
@@ -64,7 +111,7 @@
             isSubmitting = true;
             const completedDateTime = new Date(`${completedDate}T${completedTime}`);
             
-            const activityData = {
+            const activityData: ActivityData = {
                 treeId,
                 type: activityType,
                 details,
@@ -81,11 +128,12 @@
             });
             
             const responseData = await response.json();
+            console.log('API response:', responseData);
             
             if (response.ok) {
                 successMessage = 'Activity logged successfully!';
                 setTimeout(() => {
-                    goto('/app');
+                    goto('/app/log/history');
                 }, 2000);
             } else {
                 errorMessage = responseData.message || 'Failed to log activity. Please try again.';
@@ -102,7 +150,7 @@
 
 <div class="container mx-auto px-4 py-6 max-w-md text-white">
     <div class="flex items-center mb-6">
-        <a href="/app" class="mr-4 text-2xl">←</a>
+        <a href="/app/account" class="mr-4 text-2xl">←</a>
         <h1 class="text-2xl font-bold">Log Activity</h1>
     </div>
     
@@ -164,9 +212,43 @@
                 </select>
             </div>
             
+            {#if activityType === 'condition'}
+                <div>
+                    <label for="stage" class="block text-sm font-medium mb-1">
+                        Tree Growth Stage
+                    </label>
+                    <select 
+                        id="stage" 
+                        bind:value={stage}
+                        class="w-full px-3 py-2 bg-dark-2 border rounded-md text-white"
+                    >
+                        <option value="">Select growth stage</option>
+                        {#each stageOptions as option}
+                            <option value={option.value}>{option.label}</option>
+                        {/each}
+                    </select>
+                </div>
+                
+                <div>
+                    <label for="health" class="block text-sm font-medium mb-1">
+                        Tree Health
+                    </label>
+                    <select 
+                        id="health" 
+                        bind:value={health}
+                        class="w-full px-3 py-2 bg-dark-2 border rounded-md text-white"
+                    >
+                        <option value="">Select health status</option>
+                        {#each healthOptions as option}
+                            <option value={option.value}>{option.label}</option>
+                        {/each}
+                    </select>
+                </div>
+            {/if}
+            
             <div>
                 <label for="details" class="block text-sm font-medium mb-1">
-                    Details (optional)
+                    Details {activityType === 'condition' ? '(required)' : '(optional)'}
                 </label>
                 <textarea
                     id="details"
@@ -174,6 +256,7 @@
                     rows="3"
                     class="w-full px-3 py-2 bg-dark-2 border rounded-md text-white"
                     placeholder="Add any additional details about this activity"
+                    required={activityType === 'condition'}
                 ></textarea>
             </div>
             

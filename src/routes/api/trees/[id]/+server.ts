@@ -1,8 +1,10 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { findTreeId, findTreeSpeciesId } from '$lib/server/db/colTrees';
+import { findLatestTreeLog } from '$lib/server/db/colTreeLogs';
 import { ObjectId } from 'mongodb';
 import type { Point } from 'geojson';
+import type { TreeStage } from '$lib/server/db/types';
 
 interface TreeResponse {
     _id: string;
@@ -14,6 +16,8 @@ interface TreeResponse {
         commonName: string;
         scientificName: string;
     };
+    stage?: TreeStage;
+    health?: string;
 }
 
 export const GET: RequestHandler = async ({ params, locals }) => {
@@ -58,6 +62,22 @@ export const GET: RequestHandler = async ({ params, locals }) => {
             }
         }
         
+        try {
+            const latestLog = await findLatestTreeLog(id);
+            console.log('Latest tree log:', latestLog);
+            if (latestLog) {
+                result.stage = latestLog.stage;
+                result.health = latestLog.health;
+                console.log('Setting tree stage to:', latestLog.stage);
+                console.log('Setting tree health to:', latestLog.health);
+            } else {
+                console.log('No tree logs found for this tree');
+            }
+        } catch (logError) {
+            console.error('Error fetching latest tree log:', logError);
+        }
+        
+        console.log('Final tree response:', result);
         return json(result);
     } catch (err: unknown) {
         console.error('Error fetching tree:', err);

@@ -1,8 +1,8 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { ObjectId } from 'mongodb';
-import { MONGODB_DATABASE } from '$env/static/private';
-import { startConnection } from '$lib/server/db/mongo';
+import { insertTreeLog } from '$lib/server/db/colTreeLogs';
+import type { TreeLogsDocument, TreeStage } from '$lib/server/db/types';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
     if (!locals.user) {
@@ -11,9 +11,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     try {
         const data = await request.json();
-        const { treeId, type, details, completed, completedDate } = data;
-        
-        console.log(`Using MongoDB database: ${MONGODB_DATABASE}`);
+        console.log('Received log data:', data);
+        const { treeId, type, details, completed, completedDate, stage, health } = data;
         
         if (!treeId || !type) {
             throw error(400, { message: 'Tree ID and activity type are required' });
@@ -24,25 +23,34 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         }
         
         console.log(`Processing activity for tree with ID: ${treeId}`);
+        console.log(`Stage: ${stage}, Health: ${health}`);
         
-        const client = await startConnection();
-        const db = client.db(MONGODB_DATABASE);
-        const treeLogsCollection = db.collection('treeLogs');
-        
-        const treeLogDocument = {
-            treeId: ObjectId.createFromHexString(treeId),
-            userId: locals.user._id,
+        // Create the tree log document
+        const treeLogDocument: Omit<TreeLogsDocument, '_id'> = {
+            treeId: new ObjectId(treeId),
+            userId: new ObjectId(locals.user._id),
             type,
-            details: { body: details || '' },
-            dateCompleted: completed ? new Date() : null,
+            details: { 
+                title: type === 'condition' ? 'Tree Condition Report' : undefined,
+                body: details || '',
+                tags: [type]
+            },
+            dateCompleted: completed ? new Date(completedDate || Date.now()) : null,
             dateCreated: new Date()
         };
         
-        const result = await treeLogsCollection.insertOne(treeLogDocument);
-        console.log('Tree log insert result:', JSON.stringify(result));
+        // Add stage and health if provided (for condition reports)
+        if (type === 'condition') {
+            treeLogDocument.stage = stage ? (stage as TreeStage) : 'sapling'; 
+            treeLogDocument.health = health || 'good'; 
+            
+            console.log(`Setting stage to ${treeLogDocument.stage}`);
+            console.log(`Setting health to ${treeLogDocument.health}`);
+        }
         
-        const count = await treeLogsCollection.countDocuments();
-        console.log(`Total documents in treeLogs collection: ${count}`);
+        console.log('Tree log document to insert:', treeLogDocument);
+        const result = await insertTreeLog(treeLogDocument);
+        console.log('Tree log insert result:', JSON.stringify(result));
         
         return json({ 
             success: true, 
