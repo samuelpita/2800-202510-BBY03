@@ -1,6 +1,7 @@
 import { ensureId } from "./helper";
 import { startConnection } from "./mongo";
 import { MONGODB_DATABASE } from "$env/static/private";
+import type { ReplaceType } from "$lib";
 import type { TreeDocument, TreeSpeciesDocument } from "./types";
 import type { Document, ObjectId, WithId } from "mongodb";
 import type { BBox, Point, Position } from "geojson";
@@ -93,6 +94,28 @@ export function insertTree(treeSpeciesId: ObjectId | string, location: Point, da
     });
 }
 
+export type TreeDocumentStr = ReplaceType<WithId<TreeDocument>, ObjectId, string>;
+
+export type ExtTreeDocumentStr = TreeDocumentStr & {
+    speciesInfo: ReplaceType<WithId<TreeSpeciesDocument>, ObjectId, string>;
+};
+
+export function findAllTreesMap() {
+    return getTreesCollection().then((trees) => {
+        return trees
+            .aggregate<ExtTreeDocumentStr>([
+                ...speciesInfoPipeline,
+                {
+                    $addFields: {
+                        _id: { $toString: "$_id" },
+                        treeSpeciesId: { $toString: "$treeSpeciesId" },
+                        "speciesInfo._id": { $toString: "$speciesInfo._id" },
+                    },
+                },
+            ])
+            .toArray();
+    });
+}
 
 //#region Tree Searching Types & Constants
 
@@ -118,7 +141,7 @@ export type TreeOptionsInBox = {
     speciesSearch?: string;
 };
 
-const speciesInfoPipeline: Document[] = [
+export const speciesInfoPipeline: Document[] = [
     {
         $lookup: {
             from: "treeSpecies",
