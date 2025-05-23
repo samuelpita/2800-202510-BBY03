@@ -3,7 +3,6 @@ import type { Actions, PageServerLoad } from "./$types";
 import { getEmptyFields, objectifyFormData } from "$lib";
 import { findUserEmail, insertUser } from "$lib/server/db/colUsers";
 import { createAuthCookies, getHashedPassword } from "$lib/server/authentication";
-import { endConnection } from "$lib/server/db/mongo";
 
 export const load: PageServerLoad = async ({ cookies }) => {
     const sessionId = cookies.get("sessionid");
@@ -64,7 +63,6 @@ export const actions: Actions = {
             .catch((error) => {
                 console.log(error);
                 return fail(500, { email, username, serverIssue: true });
-            })
-            .finally(endConnection);
+            });
     },
 };

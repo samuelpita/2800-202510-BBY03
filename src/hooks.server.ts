@@ -1,6 +1,5 @@
 import { stringStartsWithAny } from "$lib";
 import { findUserId } from "$lib/server/db/colUsers";
-import { endConnection } from "$lib/server/db/mongo";
 import type { Handle } from "@sveltejs/kit";
 
 export const handle: Handle = async ({ event, resolve }) => {
@@ -13,16 +12,14 @@ export const handle: Handle = async ({ event, resolve }) => {
     const userId = event.cookies.get("userid");
 
     if (sessionId && userId) {
-        await findUserId(userId)
-            .then((user) => {
-                if (user)
-                    event.locals.user = {
-                        _id: user._id.toString(),
-                        email: user.email,
-                        username: user.username,
-                    };
-            })
-            .finally(endConnection);
+        await findUserId(userId).then((user) => {
+            if (user)
+                event.locals.user = {
+                    _id: user._id.toString(),
+                    email: user.email,
+                    username: user.username,
+                };
+        });
     } else {
         event.locals.user = null;
     }

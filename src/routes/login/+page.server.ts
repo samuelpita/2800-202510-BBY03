@@ -1,6 +1,5 @@
 import { createAuthCookies, passwordMatchesHash } from "$lib/server/authentication";
 import { findUserEmail } from "$lib/server/db/colUsers";
-import { endConnection } from "$lib/server/db/mongo";
 import { getEmptyFields, objectifyFormData } from "$lib";
 import { fail, redirect } from "@sveltejs/kit";
 import type { Actions, PageServerLoad } from "./$types";
@@ -30,21 +29,19 @@ export const actions: Actions = {
         if (!email || !password) return fail(400, { email, missing: getEmptyFields(form) });
 
         // Begin handling authentication
-        return await findUserEmail(email)
-            .then((user) => {
-                // Returns an error if the user doesn't exist.
-                if (!user) return fail(400, { email, incorrect: true });
+        return await findUserEmail(email).then((user) => {
+            // Returns an error if the user doesn't exist.
+            if (!user) return fail(400, { email, incorrect: true });
 
-                // Returns an error if the passwords don't match.
-                if (!passwordMatchesHash(password, user.password))
-                    return fail(400, { email, incorrect: true });
+            // Returns an error if the passwords don't match.
+            if (!passwordMatchesHash(password, user.password))
+                return fail(400, { email, incorrect: true });
 
-                // Setup the session cookies.
-                createAuthCookies(cookies, user._id.toString());
+            // Setup the session cookies.
+            createAuthCookies(cookies, user._id.toString());
 
-                // Done! Redirect the user to the account page.
-                throw redirect(303, "/app/account");
-            })
-            .finally(endConnection);
+            // Done! Redirect the user to the account page.
+            throw redirect(303, "/app/account");
+        });
     },
 };
